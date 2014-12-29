@@ -34,3 +34,13 @@ gem 'debugger', group: [:development, :test]
 
 # Use faker
 gem 'faker'
+
+# Use haml
+gem 'haml', '~> 4.0.6'
+
+# Set up testing
+group :test do
+  gem 'rspec-rails', '~> 3.1.0'
+  gem 'factory_girl'
+  gem 'shoulda-matchers', require: false
+end
