@@ -13,16 +13,6 @@
 
 ActiveRecord::Schema.define(version: 20141214202227) do
 
-  create_table "admins", force: true do |t|
-    t.string   "first_name"
-    t.string   "last_name"
-    t.string   "email"
-    t.string   "phone_number"
-    t.string   "password_hash"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "challenges", force: true do |t|
     t.string   "question"
     t.string   "answer"
@@ -38,16 +28,26 @@ ActiveRecord::Schema.define(version: 20141214202227) do
     t.datetime "updated_at"
   end
 
+  create_table "participants", force: true do |t|
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "email"
+    t.integer  "mission_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "phone_numbers", force: true do |t|
     t.string  "number"
-    t.integer "user_id"
+    t.integer "participant_id"
   end
 
   create_table "users", force: true do |t|
     t.string   "first_name"
     t.string   "last_name"
     t.string   "email"
-    t.integer  "mission_id"
+    t.string   "phone_number"
+    t.string   "password_digest"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
