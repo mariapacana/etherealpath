@@ -1,0 +1,7 @@
+%h1= @mission.title
+%p= @mission.description
+
+%ul
+  - @mission.challenges.each do |challenge|
+    %li= challenge.question
+    %li= challenge.answer

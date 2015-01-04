@@ -11,6 +11,11 @@ class MissionsController < ApplicationController
   def create
     @mission = Mission.new(mission_params)
     @mission.save
+    # show error message if mission is invalid
     redirect_to new_mission_path
+  end
+
+  def show
+    @mission = Mission.find(params[:id])
   end
 end
