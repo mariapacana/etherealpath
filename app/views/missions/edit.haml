@@ -1,0 +1,19 @@
+%h2 Create a New Mission
+
+= form_for @mission do |f|
+  .field
+    = f.label :title
+    %br
+    = f.text_field :title
+  .field
+    = f.label :description
+    %br
+    = f.text_field :description
+  %h3 Challenges
+  #challenges
+    = f.fields_for :challenges do |challenge|
+      = render 'challenge_fields', :f => challenge
+    .links
+      = link_to_add_association 'add challenge', f, :challenges
+  = f.submit
+

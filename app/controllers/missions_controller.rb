@@ -10,12 +10,30 @@ class MissionsController < ApplicationController
 
   def create
     @mission = Mission.new(mission_params)
-    @mission.save
-    # show error message if mission is invalid
-    redirect_to new_mission_path
+    if @mission.save
+      redirect_to mission_path(@mission)
+    else
+      # show error message if mission is invalid
+      render :new
+    end
   end
 
   def show
     @mission = Mission.find(params[:id])
+  end
+
+  def edit
+    @mission = Mission.find(params[:id])
+  end
+
+  def update
+    @mission = Mission.find(params[:id])
+    if @mission.update_attributes(mission_params)
+      redirect_to mission_path(@mission)
+    else
+      # show error message if mission is invalid
+      flash[:error] = @mission.errors.full_messages
+      render :edit
+    end
   end
 end
