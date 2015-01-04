@@ -1,0 +1,14 @@
+%h2 Sign In!
+
+= form_for(:session, url: sessions_path) do |f|
+  .field
+    = f.label :email
+    %br
+    = f.text_field :email
+  .field
+    = f.label :password
+    %br
+    = f.text_field :password
+  = f.submit(value='Sign In')
+
+= flash[:error] if flash[:error]
