@@ -36,4 +36,8 @@ class MissionsController < ApplicationController
       render :edit
     end
   end
+
+  def index
+    @missions = Mission.all()
+  end
 end

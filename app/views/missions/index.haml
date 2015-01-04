@@ -1,0 +1,7 @@
+%h1 Missions
+
+%ul
+  - @missions.each do |mission|
+    %li
+      = link_to mission.title, mission_path(mission)
+      %p= mission.description
