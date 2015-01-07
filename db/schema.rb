@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20141214202227) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "challenges", force: true do |t|
     t.string   "question"
     t.string   "answer"
@@ -34,6 +37,7 @@ ActiveRecord::Schema.define(version: 20141214202227) do
     t.string   "code"
     t.string   "phone_number"
     t.integer  "challenge_id"
+    t.integer  "mission_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -8,7 +8,12 @@
 
 participants = [
   {first_name: "Maria", last_name: "Pacana", phone_number: "+16502008405", code: "aaa"},
-  # {first_name: "Ben", last_name: "Juster", phone_number: "+14155173133", code: "bbb"}
+  {first_name: "Ben", last_name: "Juster", code: "bbb"}
+  {first_name: "Participant", last_name: "1", code: "ccc"}
+  {first_name: "Participant", last_name: "2", code: "ddd"}
+  {first_name: "Participant", last_name: "3", code: "eee"}
+  {first_name: "Participant", last_name: "4", code: "fff"}
+  {first_name: "Participant", last_name: "5", code: "ggg"}
 ]
 
 participants.each do |p|
