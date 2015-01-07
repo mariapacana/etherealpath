@@ -8,8 +8,14 @@ class TwilioController < ApplicationController
     message = params["Body"]
 
     # Get participant by phone number (if you've seen them before)
-    # or by passcode (if you haven't seen them before)
-    participant = Participant.find_by(phone_number: phone) || Participant.find_by(code: message)
+    participant = Participant.find_by(phone_number: phone)
+
+    # Get participant by passcode, and save their number
+    if (!participant)
+      participant = Participant.find_by(code: message)
+      participant.update_attribute(:phone_number, phone) if participant
+    end
+
     send_message(phone, "What's the passcode?") unless participant
 
     # If they haven't started their mission, assign them to the first
