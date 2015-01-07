@@ -45,6 +45,9 @@ gem 'haml', '~> 4.0.6'
 # Use cocoon for nested forms
 gem 'cocoon'
 
+# Add Twilio gem
+gem 'twilio-ruby'
+
 # Set up testing
 group :test do
   gem 'rspec-rails', '~> 3.1.0'
