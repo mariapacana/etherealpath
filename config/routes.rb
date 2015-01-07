@@ -9,5 +9,5 @@ Rails.application.routes.draw do
   match '/sessions',  to: 'sessions#create', via: [:post]
   match '/signout', to: 'sessions#destroy', via: [:get]
 
-  match '/sms', to: 'twilio#index', via: [:get, :post]
+  match '/receive_sms', to: 'twilio#receive_sms', via: [:get, :post]
 end
