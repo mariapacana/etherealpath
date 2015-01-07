@@ -6,6 +6,6 @@ class Participant < ActiveRecord::Base
 
   private
     def set_up_code
-      self.code = "aaaa"
+      self.code = "aaaa" unless self.code
     end
 end
