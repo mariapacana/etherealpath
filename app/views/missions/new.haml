@@ -4,11 +4,11 @@
   .field
     = f.label :title
     %br
-    = f.text_field :title
+    = f.text_field :title, :size => 51
   .field
     = f.label :description
     %br
-    = f.text_field :description
+    = f.text_area :description, :rows => 2, :cols => 50
   %h3 Challenges
   #challenges
     = f.fields_for :challenges do |challenge|

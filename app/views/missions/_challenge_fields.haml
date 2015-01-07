@@ -2,9 +2,9 @@
   .field
     = f.label :question
     %br
-    = f.text_field :question
+    = f.text_field :question, :size => 51
     %br
     = f.label :answer
     %br
-    = f.text_field :answer
+    = f.text_field :answer, :size => 51
   = link_to_remove_association "remove challenge", f
