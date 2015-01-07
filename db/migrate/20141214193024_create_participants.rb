@@ -3,8 +3,9 @@ class CreateParticipants < ActiveRecord::Migration
     create_table :participants do |t|
       t.string :first_name
       t.string :last_name
-      t.string :email
-      t.belongs_to :mission
+      t.string :code
+      t.string :phone_number
+      t.belongs_to :challenge
       t.timestamps
     end
   end

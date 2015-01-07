@@ -31,8 +31,9 @@ ActiveRecord::Schema.define(version: 20141214202227) do
   create_table "participants", force: true do |t|
     t.string   "first_name"
     t.string   "last_name"
-    t.string   "email"
-    t.integer  "mission_id"
+    t.string   "code"
+    t.string   "phone_number"
+    t.integer  "challenge_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
