@@ -7,15 +7,28 @@ class TwilioController < ApplicationController
     phone = params["From"]
     message = params["Body"]
 
-    # Find by phone number, or find by code
-    participant = Participant.find_by(phone_number: phone)
-    if participant
-      send_message(participant.phone_number, "So glad I found you <3")
+    # Get participant by phone number (if you've seen them before)
+    # or by passcode (if you haven't seen them before)
+    participant = Participant.find_by(phone_number: phone) || Participant.find_by(code: message)
+    send_message(phone, "What's the passcode?") unless participant
+
+    # If they haven't started their mission, assign them to the first
+    # challenge
+    if participant.has_yet_to_start_mission
+      participant.assign_to_first_challenge
+      send_message(phone, participant.challenge.question)
     else
-      participant = Participant.find_by(code: message)
-      send_message(phone, "What's the passcode?") unless participant
+    # Otherwise, check their answer and move them along if they got it right.
+      if participant.challenge.answer == message
+        if participant.challenge == participant.mission.challenges.last
+          send_message(phone, "You finished the game!")
+        else
+          participant.assign_to_next_challenge
+          send_message(phone, participant.challenge.question)
+        end
+      else
+        send_message(phone, "Sorry, wrong answer!")
+      end
     end
-
   end
-
 end
