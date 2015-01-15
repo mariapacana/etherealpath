@@ -17,8 +17,11 @@ ActiveRecord::Schema.define(version: 20141214202227) do
   enable_extension "plpgsql"
 
   create_table "challenges", force: true do |t|
+    t.string   "location"
     t.string   "question"
     t.string   "answer"
+    t.string   "response_success"
+    t.string   "response_failure"
     t.integer  "mission_id"
     t.datetime "created_at"
     t.datetime "updated_at"

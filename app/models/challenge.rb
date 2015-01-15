@@ -2,7 +2,13 @@ class Challenge < ActiveRecord::Base
   belongs_to :mission
   has_many :participants
 
-  validates :question, :answer, presence: true
+  validate :location_is_either_rooted_sf_or_east_bay
+  validates :location,
+            :question,
+            :answer,
+            :response_success,
+            :response_failure,
+            presence: true
 
   def next
     mission.challenges.where("id > ?", id).first
@@ -11,4 +17,12 @@ class Challenge < ActiveRecord::Base
   def prev
     mission.challenges.where("id < ?", id).last
   end
+
+  private
+    def location_is_either_rooted_sf_or_east_bay
+      return if location.blank?
+      if !location.match(/rooted|SF|East Bay/)
+        errors.add(:location, "must be SF, East Bay, or rooted")
+      end
+    end
 end
