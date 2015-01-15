@@ -1,14 +1,16 @@
 class Challenge < ActiveRecord::Base
   belongs_to :mission
   has_many :participants
+  has_many :answers
 
   validate :location_is_either_rooted_sf_or_east_bay
   validates :location,
             :question,
-            :answer,
             :response_success,
             :response_failure,
             presence: true
+
+  accepts_nested_attributes_for :answers, :reject_if => :all_blank, :allow_destroy => true
 
   def next
     mission.challenges.where("id > ?", id).first
