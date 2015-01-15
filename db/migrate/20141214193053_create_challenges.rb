@@ -3,7 +3,6 @@ class CreateChallenges < ActiveRecord::Migration
     create_table :challenges do |t|
       t.string :location
       t.string :question
-      t.string :answer
       t.string :response_success
       t.string :response_failure
       t.belongs_to :mission

@@ -11,15 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141214202227) do
+ActiveRecord::Schema.define(version: 20150115225646) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "answers", force: true do |t|
+    t.string  "text"
+    t.integer "challenge_id"
+  end
+
   create_table "challenges", force: true do |t|
     t.string   "location"
     t.string   "question"
-    t.string   "answer"
     t.string   "response_success"
     t.string   "response_failure"
     t.integer  "mission_id"
@@ -30,6 +34,7 @@ ActiveRecord::Schema.define(version: 20141214202227) do
   create_table "missions", force: true do |t|
     t.string   "title"
     t.string   "description"
+    t.datetime "start_time"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
