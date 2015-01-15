@@ -53,6 +53,7 @@ group :test do
   gem 'rspec-rails', '~> 3.1.0'
   gem 'factory_girl'
   gem 'shoulda-matchers', require: false
+  gem 'capybara'
 end
 
 #debugging
