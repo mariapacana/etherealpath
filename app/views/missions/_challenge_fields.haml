@@ -1,10 +1,27 @@
 .nested-fields
   .field
+    = f.label :location
+    %br
+    = f.select(:location, options_for_select([['SF', 'SF'],                                        ['East Bay', 'East Bay'],
+                                              ['rooted', 'rooted']]))
+    %br
     = f.label :question
     %br
     = f.text_field :question, :size => 51
     %br
-    = f.label :answer
+    %h4 Answers
+    #answers
+    = f.fields_for :answers do |answer|
+      = render 'answer_fields', :f => answer
+    .links
+      = link_to_add_association 'add answer', f, :answers
     %br
-    = f.text_field :answer, :size => 51
+    = f.label(:response_success, "Response on success")
+    %br
+    = f.text_field :response_success, :size => 51
+    %br
+    = f.label(:response_failure, "Response on failure")
+    %br
+    = f.text_field :response_failure, :size => 51
+    %br
   = link_to_remove_association "remove challenge", f
