@@ -54,6 +54,7 @@ group :test do
   gem 'factory_girl'
   gem 'shoulda-matchers', require: false
   gem 'capybara'
+  gem 'rack_session_access'
 end
 
 #debugging

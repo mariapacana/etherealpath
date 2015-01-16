@@ -3,6 +3,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require 'spec_helper'
 require File.expand_path("../../config/environment", __FILE__)
 require 'capybara/rails'
+require 'rack_session_access/capybara'
 require 'rspec/rails'
 require 'shoulda/matchers'
 # Add additional requires below this line. Rails is not loaded until this point!
