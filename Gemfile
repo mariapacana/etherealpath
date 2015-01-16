@@ -54,8 +54,11 @@ group :test do
   gem 'factory_girl'
   gem 'shoulda-matchers', require: false
   gem 'capybara'
+  gem 'selenium-webdriver'
   gem 'rack_session_access'
 end
+
+gem 'database_cleaner'
 
 #debugging
 gem 'pry'
