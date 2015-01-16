@@ -48,6 +48,12 @@ gem 'cocoon'
 # Add Twilio gem
 gem 'twilio-ruby'
 
+# Add paperclip for images
+gem 'paperclip'
+
+# Add AWS for storage
+gem 'aws-sdk'
+
 # Set up testing
 group :test do
   gem 'rspec-rails', '~> 3.1.0'
