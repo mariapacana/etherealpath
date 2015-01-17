@@ -3,8 +3,11 @@ require "rails_helper"
 RSpec.describe Challenge, :type => :model do
   describe "#initialize" do
     it { should belong_to(:mission)}
-    it { should have_many(:participants)}
+    it { should have_many(:responses)}
+    it { should have_many(:participants).through(:responses) }
+    it { should have_many(:current_participants).with_foreign_key(:current_challenge_id) }
     it { should have_many(:answers)}
+
     it { should validate_presence_of(:location)}
     it { should validate_presence_of(:question)}
     it { should validate_presence_of(:response_success)}

@@ -5,7 +5,7 @@ class CreateParticipants < ActiveRecord::Migration
       t.string :last_name
       t.string :code
       t.string :phone_number
-      t.belongs_to :challenge
+      t.string :current_challenge_id
       t.belongs_to :mission
       t.timestamps
     end

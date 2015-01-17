@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150115225646) do
+ActiveRecord::Schema.define(version: 20150116214147) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(version: 20150115225646) do
     t.string   "last_name"
     t.string   "code"
     t.string   "phone_number"
-    t.integer  "challenge_id"
+    t.string   "current_challenge_id"
     t.integer  "mission_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -53,6 +53,16 @@ ActiveRecord::Schema.define(version: 20150115225646) do
   create_table "phone_numbers", force: true do |t|
     t.string  "number"
     t.integer "participant_id"
+  end
+
+  create_table "responses", force: true do |t|
+    t.string   "text"
+    t.integer  "participant_id"
+    t.integer  "challenge_id"
+    t.string   "picture_file_name"
+    t.string   "picture_content_type"
+    t.integer  "picture_file_size"
+    t.datetime "picture_updated_at"
   end
 
   create_table "users", force: true do |t|
