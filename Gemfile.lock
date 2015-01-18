@@ -131,10 +131,6 @@ GEM
     rake (10.4.2)
     rdoc (4.2.0)
       json (~> 1.4)
-    rspec (3.1.0)
-      rspec-core (~> 3.1.0)
-      rspec-expectations (~> 3.1.0)
-      rspec-mocks (~> 3.1.0)
     rspec-core (3.1.7)
       rspec-support (~> 3.1.0)
     rspec-expectations (3.1.2)
@@ -169,8 +165,6 @@ GEM
     shoulda-matchers (2.7.0)
       activesupport (>= 3.0.0)
     slop (3.5.0)
-    sms-spec (0.1.7)
-      rspec
     spring (1.2.0)
     sprockets (2.12.3)
       hike (~> 1.2)
@@ -227,7 +221,6 @@ DEPENDENCIES
   sdoc (~> 0.4.0)
   selenium-webdriver
   shoulda-matchers
-  sms-spec
   spring
   turbolinks
   twilio-ruby
