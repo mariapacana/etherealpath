@@ -18,4 +18,16 @@ class Response < ActiveRecord::Base
     self.picture = URI.parse(url_value)
     @avatar_remote_url = url_value
   end
+
+  def mark_correct
+    self.update_attribute(:correct, true)
+  end
+
+  def is_correct?
+    return true if self.challenge.any_answer_acceptable
+    self.challenge.answers.each do |answer|
+      return true if answer.matches_text(self.text)
+    end
+    false
+  end
 end
