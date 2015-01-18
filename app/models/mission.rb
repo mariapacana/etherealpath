@@ -7,13 +7,8 @@ class Mission < ActiveRecord::Base
 
   validate :start_time_is_after_today
 
-  after_create  :associate_participants
 
   private
-    def associate_participants
-      Participant.all.each {|p| p.update_attribute(:mission_id, self.id)}
-    end
-
     def start_time_is_after_today
       return if start_time.blank?
       if start_time < DateTime.now
