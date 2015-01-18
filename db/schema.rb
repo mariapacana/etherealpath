@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20150117213059) do
     t.string   "question"
     t.string   "response_success"
     t.string   "response_failure"
+    t.boolean  "any_answer_acceptable"
     t.integer  "mission_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -56,6 +57,7 @@ ActiveRecord::Schema.define(version: 20150117213059) do
 
   create_table "responses", force: true do |t|
     t.string   "text"
+    t.boolean  "correct"
     t.integer  "participant_id"
     t.integer  "challenge_id"
     t.string   "picture_file_name"

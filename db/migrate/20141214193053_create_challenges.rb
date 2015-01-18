@@ -5,6 +5,7 @@ class CreateChallenges < ActiveRecord::Migration
       t.string :question
       t.string :response_success
       t.string :response_failure
+      t.boolean :any_answer_acceptable
       t.belongs_to :mission
       t.timestamps
     end

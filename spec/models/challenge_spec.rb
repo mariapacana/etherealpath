@@ -17,36 +17,15 @@ RSpec.describe Challenge, :type => :model do
       valid_challenge = Challenge.create({location: "SF",
                                          question: "blah",
                                          response_success: "blah",
-                                         response_failure: "blah"})
+                                         response_failure: "blah",
+                                         any_answer_acceptable: false})
       invalid_challenge = Challenge.create({location: "Mars",
                                            question: "blah",
                                            response_success: "blah",
-                                           response_failure: "blah"})
+                                           response_failure: "blah",
+                                           any_answer_acceptable: false})
       expect(valid_challenge).to be_valid
       expect(invalid_challenge).not_to be_valid
     end
   end
-
-  describe "#next and #previous"
-    let!(:mission) {Mission.create({title: "Mission",
-                                   description: "Yay",
-                                   start_time: DateTime.new(2016,1,1)})}
-    let!(:challenge1) {mission.challenges.create({location: "SF",
-                                                   question: "blah",
-                                                   response_success: "blah",
-                                                   response_failure: "blah"})}
-    let!(:challenge2) {mission.challenges.create({location: "East Bay",
-                                                 question: "blah",
-                                                 response_success: "blah",
-                                                 response_failure: "blah"})}
-    describe "#next" do
-      it "gets you the next challenge in a mission" do
-        expect(challenge1.next()).to eq(challenge2)
-      end
-    end
-    describe "#previous" do
-      it "gets you the previous challenge in a mission" do
-        expect(challenge2.prev()).to eq(challenge1)
-      end
-    end
 end

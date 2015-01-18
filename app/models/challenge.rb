@@ -12,15 +12,9 @@ class Challenge < ActiveRecord::Base
             :response_failure,
             presence: true
 
+  validates :any_answer_acceptable, :inclusion => [true, false]
+
   accepts_nested_attributes_for :answers, :reject_if => :all_blank, :allow_destroy => true
-
-  def next
-    mission.challenges.where("id > ?", id).first
-  end
-
-  def prev
-    mission.challenges.where("id < ?", id).last
-  end
 
   private
     def location_is_either_rooted_sf_or_east_bay
