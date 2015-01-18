@@ -7,6 +7,7 @@ require 'rack_session_access/capybara'
 require 'rspec/rails'
 require 'shoulda/matchers'
 require 'paperclip/matchers'
+require 'sms_spec'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -33,7 +34,7 @@ RSpec.configure do |config|
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
   config.use_transactional_fixtures = false
   config.infer_spec_type_from_file_location!
-  config.include Paperclip::Shoulda::Matchers
+
   config.before :each do
     if Capybara.current_driver == :rack_test
      DatabaseCleaner.strategy = :transaction
@@ -46,4 +47,10 @@ RSpec.configure do |config|
   config.after do
     DatabaseCleaner.clean
   end
+
+  config.include Paperclip::Shoulda::Matchers
+  config.include SmsSpec::Helpers
+  config.include SmsSpec::Matchers
 end
+
+SmsSpec.driver = :"twilio-ruby"
