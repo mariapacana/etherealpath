@@ -43,7 +43,6 @@ ActiveRecord::Schema.define(version: 20150117213059) do
     t.string   "first_name"
     t.string   "last_name"
     t.string   "code"
-    t.string   "phone_number"
     t.string   "current_challenge_id"
     t.integer  "mission_id"
     t.datetime "created_at"

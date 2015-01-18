@@ -7,7 +7,7 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 participants = [
-  {first_name: "Maria", last_name: "Pacana", phone_number: "+16502008405", code: "aaa"},
+  {first_name: "Maria", last_name: "Pacana", code: "aaa"},
   {first_name: "Ben", last_name: "Juster", code: "bbb"}
   {first_name: "Participant", last_name: "1", code: "ccc"}
   {first_name: "Participant", last_name: "2", code: "ddd"}
