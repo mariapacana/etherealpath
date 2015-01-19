@@ -3,7 +3,13 @@ class Mission < ActiveRecord::Base
   has_many :participants
   accepts_nested_attributes_for :challenges, :reject_if => :all_blank, :allow_destroy => true
 
-  validates :title, :description, :start_time, presence: true
+  validates :title,
+            :description,
+            :intro,
+            :warning,
+            :start_time,
+            :completed_challenges_required,
+            presence: true
 
   validate :start_time_is_after_today
 

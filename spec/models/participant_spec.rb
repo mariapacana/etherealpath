@@ -3,6 +3,9 @@ require "rails_helper"
 RSpec.describe Participant, :type => :model do
   let!(:mission) { Mission.create({title: "Awesome Mission",
                   description: "Yay",
+                  intro: "Enigmatic Intro",
+                  warning: "Obscure Warning",
+                  completed_challenges_required: 3,
                   start_time: DateTime.now+1})}
   let!(:challenge1) {mission.challenges.create({location: "SF",
                                                 question: "blah",
@@ -20,12 +23,27 @@ RSpec.describe Participant, :type => :model do
                                              response_failure: "blah",
                                              any_answer_acceptable: false})}
   let!(:participant) { Participant.create(first_name: "Maria",
-                                         last_name: "Pacana") }
+                                          last_name: "Pacana",
+                                          intro_sent: true,
+                                          warning_sent: true,
+                                          declined: false) }
   let!(:participant_with_phone) { Participant.create(first_name: "Phony",
-                                                    last_name: "McPhone") }
+                                                    last_name: "McPhone",
+                                                    intro_sent: true,
+                                                    warning_sent: true,
+                                                    declined: false) }
   let!(:participant_with_code) { Participant.create(first_name: "Cody",
                                                     last_name: "McCode",
-                                                    code: "6666")}
+                                                    code: "6666",
+                                                    intro_sent: true,
+                                                    warning_sent: true,
+                                                    declined: false) }
+let!(:participant_undecided) { Participant.create(first_name: "Waffly",
+                                                    last_name: "McWaffle",
+                                                    code: "5555",
+                                                    intro_sent: false,
+                                                    warning_sent: false,
+                                                    declined: false) }
 
   describe "#initialize" do
     it { should have_many(:phone_numbers)}
@@ -34,10 +52,6 @@ RSpec.describe Participant, :type => :model do
     it { should belong_to(:current_challenge).with_foreign_key(:current_challenge_id) }
     it { should validate_presence_of(:first_name)}
     it { should validate_presence_of(:last_name)}
-
-    it "should set up a dummy code" do
-      expect(participant.code).to eq("aaaa")
-    end
   end
 
   describe ".find_by_name_or_code" do
@@ -156,8 +170,12 @@ RSpec.describe Participant, :type => :model do
     end
   end
 
-  # When deciding the next message to send
+  describe "#confirm_interest" do
+    context "when neither the intro nor confirmation has been sent"
 
+  end
+
+  # When deciding the next message to send
     # 1: participant just responded to a challenge
       # a. participant is correct
         # i. they finished the game
@@ -173,7 +191,6 @@ RSpec.describe Participant, :type => :model do
     # 2. participant is saying what challenge they want
       # assign them to a challenge of the type they want
       # send them the challenge question
-
   describe "#next_messages" do
     context "if participant isn't assigned to a challenge" do
       it "should respond with a challenge question" do

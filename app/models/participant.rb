@@ -7,8 +7,6 @@ class Participant < ActiveRecord::Base
 
   validates :first_name, :last_name, presence: true
 
-  before_create :set_up_code
-
   def self.find_by_name_or_code(params = {})
     if phone_number = PhoneNumber.find_by(number: params[:phone])
       participant = phone_number.participant
@@ -85,9 +83,4 @@ class Participant < ActiveRecord::Base
     end
     messages
   end
-
-  private
-    def set_up_code
-      self.code = "aaaa" unless self.code
-    end
 end

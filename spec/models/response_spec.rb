@@ -2,9 +2,15 @@ require "rails_helper"
 
 RSpec.describe Response, :type => :model do
   let!(:participant) { Participant.create(first_name: "Maria",
-                                          last_name: "Pacana") }
+                                          last_name: "Pacana",
+                                          intro_sent: false,
+                                          warning_sent: false,
+                                          declined: false) }
   let!(:mission) {Mission.create({title: "Mission",
                                   description: "Yay",
+                                  intro: "Random Intro",
+                                  warning: "Obscure Warning",
+                                  completed_challenges_required: 3,
                                   start_time: DateTime.new(2016,1,1)})}
   let!(:challenge) {mission.challenges.create({location: "SF",
                                                question: "blah",

@@ -5,6 +5,9 @@ class CreateParticipants < ActiveRecord::Migration
       t.string :last_name
       t.string :code
       t.string :current_challenge_id
+      t.boolean :declined
+      t.boolean :intro_sent
+      t.boolean :warning_sent
       t.belongs_to :mission
       t.timestamps
     end
