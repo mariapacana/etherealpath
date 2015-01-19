@@ -41,7 +41,11 @@ class Participant < ActiveRecord::Base
     self.current_challenge = nil
   end
 
-  # Confirming interest
+  def finished_mission?
+    self.uncompleted_challenges().empty?
+  end
+
+   # Confirming interest
 
   def participation_unconfirmed
     !warning_accepted || !intro_accepted
@@ -97,28 +101,38 @@ class Participant < ActiveRecord::Base
     self.assign_to_challenge(self.next_challenge(location))
   end
 
+  # Checking responses
+  def check_response(response, messages)
+    response = Response.create_with_associations(response_text: response,
+    challenge: self.current_challenge, participant: self)
+    if response.is_correct?
+      response.mark_correct
+      if self.finished_mission?
+        messages.push("Congratulations, you finished!")
+      else # Move them along to the next challenge
+        messages.push(response.challenge.response_success)
+        messages.push(self.mission.location_invite)
+        self.unassign_from_challenge
+      end
+    else
+      messages.push(current_challenge.response_failure || "Sorry, wrong answer!")
+    end
+  end
 
   # When deciding the next message to send
   def next_messages(params)
     messages = []
-    if self.unassigned_to_a_challenge
-      self.assign_to_next_challenge(params[:response_text])
-      messages.push(self.current_challenge.question)
+    if self.participation_unconfirmed
+      messages.push(self.confirm_interest(params[:response_text]))
+    # Participation confirmed
     else
-      response = Response.new(text: params[:response_text])
-      response.challenge = current_challenge
-      response.participant = self
-      if (response.is_correct?)
-        response.mark_correct
-        if self.uncompleted_challenges().empty?
-          messages.push("Congratulations, you finished!")
-        else
-          messages.push(response.challenge.response_success)
-          messages.push("Where would you like to go next (SF, East Bay, home?)")
-          self.unassign_from_challenge
-        end
+      # Participant is selecting a location
+      if self.unassigned_to_a_challenge
+        self.assign_to_next_challenge(params[:response_text])
+        messages.push(self.current_challenge.question)
       else
-        messages.push(current_challenge.response_failure || "Sorry, wrong answer!")
+        # Participant is sending a response
+        self.check_response(params[:response_text], messages)
       end
     end
     messages
