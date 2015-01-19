@@ -4,13 +4,13 @@ RSpec.describe Mission, :type => :model do
   describe "#initialize" do
     it { should have_many(:challenges)}
     it { should validate_presence_of(:title)}
+    it { should validate_presence_of(:start_time)}
     it { should validate_presence_of(:description)}
     it { should validate_presence_of(:intro)}
     it { should validate_presence_of(:warning)}
     it { should validate_presence_of(:decline_confirmation)}
     it { should validate_presence_of(:finish_confirmation)}
     it { should validate_presence_of(:location_invite)}
-    it { should validate_presence_of(:start_time)}
     it { should validate_presence_of(:completed_challenges_required)}
 
     it "validates that start time is after today" do

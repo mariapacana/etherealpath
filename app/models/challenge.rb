@@ -12,8 +12,6 @@ class Challenge < ActiveRecord::Base
             :response_failure,
             presence: true
 
-  validates :any_answer_acceptable, :inclusion => [true, false]
-
   accepts_nested_attributes_for :answers, :reject_if => :all_blank, :allow_destroy => true
 
   private
