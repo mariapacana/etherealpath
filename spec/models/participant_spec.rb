@@ -5,6 +5,8 @@ RSpec.describe Participant, :type => :model do
                   description: "Yay",
                   intro: "Enigmatic Intro",
                   warning: "Obscure Warning",
+                  decline_confirmation: "OK fine",
+                  location_invite: "rooted, SF, or Ebay?",
                   completed_challenges_required: 3,
                   start_time: DateTime.now+1})}
   let!(:challenge1) {mission.challenges.create({location: "SF",
@@ -24,25 +26,25 @@ RSpec.describe Participant, :type => :model do
                                              any_answer_acceptable: false})}
   let!(:participant) { Participant.create(first_name: "Maria",
                                           last_name: "Pacana",
-                                          intro_sent: true,
-                                          warning_sent: true,
+                                          intro_accepted: true,
+                                          warning_accepted: true,
                                           declined: false) }
   let!(:participant_with_phone) { Participant.create(first_name: "Phony",
                                                     last_name: "McPhone",
-                                                    intro_sent: true,
-                                                    warning_sent: true,
+                                                    intro_accepted: true,
+                                                    warning_accepted: true,
                                                     declined: false) }
   let!(:participant_with_code) { Participant.create(first_name: "Cody",
                                                     last_name: "McCode",
                                                     code: "6666",
-                                                    intro_sent: true,
-                                                    warning_sent: true,
+                                                    intro_accepted: true,
+                                                    warning_accepted: true,
                                                     declined: false) }
-let!(:participant_undecided) { Participant.create(first_name: "Waffly",
+let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
                                                     last_name: "McWaffle",
                                                     code: "5555",
-                                                    intro_sent: false,
-                                                    warning_sent: false,
+                                                    intro_accepted: false,
+                                                    warning_accepted: false,
                                                     declined: false) }
 
   describe "#initialize" do
@@ -124,7 +126,69 @@ let!(:participant_undecided) { Participant.create(first_name: "Waffly",
     end
   end
 
-  describe "when figuring out what challenge to assign" do
+  describe "when confirming interest" do
+    before(:each) do
+      participant_unconfirmed.assign_to_mission(mission)
+    end
+
+    describe "#participation_unconfirmed" do
+      it "should be true when if the warning or intro are unaccepted" do
+        expect(participant_unconfirmed.participation_unconfirmed).to be true
+        participant_unconfirmed.intro_accepted = true
+        expect(participant_unconfirmed.participation_unconfirmed).to be true
+      end
+    end
+
+    describe "#has_accepted_neither_intro_nor_warning" do
+      it "should be true when both warning and intro are unaccepted" do
+        expect(participant_unconfirmed.has_accepted_neither_intro_nor_warning).to be true
+        participant_unconfirmed.intro_accepted = true
+        expect(participant_unconfirmed.has_accepted_neither_intro_nor_warning).to be false
+      end
+    end
+
+    describe "#has_accepted_only_intro" do
+      it "should be true when only the intro was accepted" do
+        expect(participant_unconfirmed.has_accepted_only_intro).to be false
+        participant_unconfirmed.intro_accepted = true
+        expect(participant_unconfirmed.has_accepted_only_intro).to be true
+      end
+    end
+
+    describe "#confirm_interest" do
+      context "when the participant accepts the intro" do
+        it "should return the warning for the mission" do
+          expect(participant_unconfirmed.confirm_interest("Yes")).to be(mission.warning)
+          expect(participant_unconfirmed.intro_accepted).to be true
+          expect(participant_unconfirmed.declined).to be false
+        end
+      end
+      context "when the participant rejects the intro" do
+        it "should return the decline confirmation for the mission" do
+          expect(participant_unconfirmed.confirm_interest("No")).to be(mission.decline_confirmation)
+          expect(participant_unconfirmed.intro_accepted).to be false
+          expect(participant_unconfirmed.declined).to be true
+        end
+      end
+      context "when the participant accepts the warning" do
+        it "should set the warning_accepted flag to true" do
+          participant_unconfirmed.intro_accepted = true
+          expect(participant_unconfirmed.confirm_interest("Yeah")).to be(mission.location_invite)
+          expect(participant_unconfirmed.warning_accepted).to be true
+        end
+      end
+      context "when the participant rejects the warning" do
+        it "should set declined to true and warning_accepted to false" do
+          participant_unconfirmed.intro_accepted = true
+          expect(participant_unconfirmed.confirm_interest("No")).to be(mission.decline_confirmation)
+          expect(participant_unconfirmed.warning_accepted).to be false
+          expect(participant_unconfirmed.declined).to be true
+        end
+      end
+    end
+  end
+
+  describe "when assigning challenges" do
     before(:each) do
       participant.mission = mission
       response = Response.new(text: "hey")
@@ -170,10 +234,6 @@ let!(:participant_undecided) { Participant.create(first_name: "Waffly",
     end
   end
 
-  describe "#confirm_interest" do
-    context "when neither the intro nor confirmation has been sent"
-
-  end
 
   # When deciding the next message to send
     # 1: participant just responded to a challenge
@@ -191,55 +251,55 @@ let!(:participant_undecided) { Participant.create(first_name: "Waffly",
     # 2. participant is saying what challenge they want
       # assign them to a challenge of the type they want
       # send them the challenge question
-  describe "#next_messages" do
-    context "if participant isn't assigned to a challenge" do
-      it "should respond with a challenge question" do
-        participant.mission = mission
-        next_messages = participant.next_messages(response_text: "SF")
-        expect(participant.current_challenge).to eq(challenge1)
-        expect(next_messages).to include(challenge1.question)
-      end
-    end
-    context "if a participant is solving a challenge, but it isn't the last" do
-      before(:each) do
-        participant.mission = mission
-        response = Response.create(text: "hey")
-        response.participant = participant
-        response.challenge = challenge2
-        response.mark_correct
-        challenge1.answers.create({text: "hooray"})
-        participant.assign_to_next_challenge(challenge1.location)
-      end
+  # describe "#next_messages" do
+  #   context "if participant isn't assigned to a challenge" do
+  #     it "should respond with a challenge question" do
+  #       participant.mission = mission
+  #       next_messages = participant.next_messages(response_text: "SF")
+  #       expect(participant.current_challenge).to eq(challenge1)
+  #       expect(next_messages).to include(challenge1.question)
+  #     end
+  #   end
+  #   context "if a participant is solving a challenge, but it isn't the last" do
+  #     before(:each) do
+  #       participant.mission = mission
+  #       response = Response.create(text: "hey")
+  #       response.participant = participant
+  #       response.challenge = challenge2
+  #       response.mark_correct
+  #       challenge1.answers.create({text: "hooray"})
+  #       participant.assign_to_next_challenge(challenge1.location)
+  #     end
 
-      it "should give them a success response and ask where they want the next challenge to be located" do
-        next_messages = participant.next_messages(response_text: "hooray")
-        expect(next_messages).to include(challenge1.response_success)
-        expect(next_messages).to include("Where would you like to go next (SF, East Bay, home?)")
-        expect(participant.current_challenge).to be nil
-      end
-      it "should tell them they're wrong otherwise" do
-        expect(participant.next_messages(response_text: "whoa so wrong")).to include(challenge1.response_failure || "Sorry, wrong answer!")
-      end
-    end
-    context "if participant is on their last challenge" do
-      before(:each) do
-        participant.mission = mission
-        [challenge1, challenge2].each do |challenge|
-          response = Response.create(text: "hey")
-          response.participant = participant
-          response.challenge = challenge
-          response.mark_correct
-        end
-        challenge3.answers.create({text: "incandescent"})
-        participant.assign_to_next_challenge(challenge3.location)
-      end
+  #     it "should give them a success response and ask where they want the next challenge to be located" do
+  #       next_messages = participant.next_messages(response_text: "hooray")
+  #       expect(next_messages).to include(challenge1.response_success)
+  #       expect(next_messages).to include("Where would you like to go next (SF, East Bay, home?)")
+  #       expect(participant.current_challenge).to be nil
+  #     end
+  #     it "should tell them they're wrong otherwise" do
+  #       expect(participant.next_messages(response_text: "whoa so wrong")).to include(challenge1.response_failure || "Sorry, wrong answer!")
+  #     end
+  #   end
+  #   context "if participant is on their last challenge" do
+  #     before(:each) do
+  #       participant.mission = mission
+  #       [challenge1, challenge2].each do |challenge|
+  #         response = Response.create(text: "hey")
+  #         response.participant = participant
+  #         response.challenge = challenge
+  #         response.mark_correct
+  #       end
+  #       challenge3.answers.create({text: "incandescent"})
+  #       participant.assign_to_next_challenge(challenge3.location)
+  #     end
 
-      it "should congratulate them when they get it right" do
-        expect(participant.next_messages(response_text: "incandescent")).to include("Congratulations, you finished!")
-      end
-      it "should tell them they're wrong otherwise" do
-        expect(participant.next_messages(response_text: "whoa so wrong")).to include(challenge3.response_failure || "Sorry, wrong answer!")
-      end
-    end
-  end
+  #     it "should congratulate them when they get it right" do
+  #       expect(participant.next_messages(response_text: "incandescent")).to include("Congratulations, you finished!")
+  #     end
+  #     it "should tell them they're wrong otherwise" do
+  #       expect(participant.next_messages(response_text: "whoa so wrong")).to include(challenge3.response_failure || "Sorry, wrong answer!")
+  #     end
+  #   end
+  # end
 end

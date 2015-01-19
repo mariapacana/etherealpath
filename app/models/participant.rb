@@ -7,6 +7,8 @@ class Participant < ActiveRecord::Base
 
   validates :first_name, :last_name, presence: true
 
+  include StringHelper
+
   def self.find_by_name_or_code(params = {})
     if phone_number = PhoneNumber.find_by(number: params[:phone])
       participant = phone_number.participant
@@ -39,7 +41,44 @@ class Participant < ActiveRecord::Base
     self.current_challenge = nil
   end
 
-  #   Deciding what challenge to assign
+  # Confirming interest
+
+  def participation_unconfirmed
+    !warning_accepted || !intro_accepted
+  end
+
+  def has_accepted_neither_intro_nor_warning
+    !warning_accepted && !intro_accepted
+  end
+
+  def has_accepted_only_intro
+    !warning_accepted && intro_accepted
+  end
+
+  def confirm_interest(response)
+    if self.has_accepted_neither_intro_nor_warning
+      if matches_text(response, "Yes")
+        self.intro_accepted = true
+        message = self.mission.warning
+      else
+        self.intro_accepted = false
+        self.declined = true
+        message = self.mission.decline_confirmation
+      end
+    elsif self.has_accepted_only_intro
+      if matches_text(response, "No")
+        self.warning_accepted = false
+        self.declined = true
+        message = self.mission.decline_confirmation
+      else
+        self.warning_accepted = true
+        message = self.mission.location_invite
+      end
+    end
+    message
+  end
+
+  # Assigning challenges
 
   def completed_challenges
     challenges = self.responses.where({correct: true}).map {|r| r.challenge }
@@ -57,6 +96,7 @@ class Participant < ActiveRecord::Base
   def assign_to_next_challenge(location)
     self.assign_to_challenge(self.next_challenge(location))
   end
+
 
   # When deciding the next message to send
   def next_messages(params)
