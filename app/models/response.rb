@@ -14,6 +14,13 @@ class Response < ActiveRecord::Base
 
   validates_attachment_content_type :picture, :content_type => /\Aimage\/.*\Z/
 
+  def self.create_with_associations(params)
+    response = self.create(text: params[:response_text])
+    response.challenge = params[:challenge]
+    response.participant = params[:participant]
+    response
+  end
+
   def picture_remote_url=(url_value)
     self.picture = URI.parse(url_value)
     @avatar_remote_url = url_value
