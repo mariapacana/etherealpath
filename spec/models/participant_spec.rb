@@ -6,6 +6,7 @@ RSpec.describe Participant, :type => :model do
                   intro: "Enigmatic Intro",
                   warning: "Obscure Warning",
                   decline_confirmation: "OK fine",
+                  finish_confirmation: "Congrats",
                   location_invite: "rooted, SF, or Ebay?",
                   completed_challenges_required: 3,
                   start_time: DateTime.now+1})}
@@ -306,7 +307,7 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
             participant.assign_to_last_challenge
 
             participant.check_response("yay", messages)
-            expect(messages).to include("Congratulations, you finished!")
+            expect(messages).to include(mission.finish_confirmation)
           end
         end
         context "if they are nowhere near the end" do

@@ -7,6 +7,7 @@ class CreateMissions < ActiveRecord::Migration
       t.string :warning
       t.string :decline_confirmation
       t.string :location_invite
+      t.string :finish_confirmation
       t.integer :completed_challenges_required
       t.datetime :start_time
       t.timestamps

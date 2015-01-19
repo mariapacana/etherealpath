@@ -8,6 +8,7 @@ class Mission < ActiveRecord::Base
             :intro,
             :warning,
             :decline_confirmation,
+            :finish_confirmation,
             :location_invite,
             :start_time,
             :completed_challenges_required,

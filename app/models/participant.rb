@@ -126,7 +126,7 @@ class Participant < ActiveRecord::Base
     if response.is_correct?
       response.mark_correct
       if self.finished_mission?
-        messages.push("Congratulations, you finished!")
+        messages.push(self.mission.finish_confirmation)
       elsif self.should_be_sent_to_last_challenge?
         messages.push(response.challenge.response_success)
         self.unassign_from_challenge

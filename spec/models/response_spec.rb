@@ -11,6 +11,7 @@ RSpec.describe Response, :type => :model do
                                   intro: "Random Intro",
                                   warning: "Obscure Warning",
                                   decline_confirmation: "OK fine",
+                                  finish_confirmation: "Congrats",
                                   location_invite: "rooted, SF, or Ebay?",
                                   completed_challenges_required: 3,
                                   start_time: DateTime.new(2016,1,1)})}

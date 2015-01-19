@@ -8,6 +8,7 @@ RSpec.describe Mission, :type => :model do
     it { should validate_presence_of(:intro)}
     it { should validate_presence_of(:warning)}
     it { should validate_presence_of(:decline_confirmation)}
+    it { should validate_presence_of(:finish_confirmation)}
     it { should validate_presence_of(:location_invite)}
     it { should validate_presence_of(:start_time)}
     it { should validate_presence_of(:completed_challenges_required)}
@@ -18,6 +19,7 @@ RSpec.describe Mission, :type => :model do
                                      intro: "You have a choice",
                                      warning: "Be very afraid",
                                      decline_confirmation: "OK fine",
+                                     finish_confirmation: "Congrats",
                                      location_invite: "rooted, SF, or Ebay?",
                                      completed_challenges_required: 3,
                                      start_time: DateTime.new(1966,1,1)})
@@ -32,6 +34,7 @@ RSpec.describe Mission, :type => :model do
                                    intro: "You have a choice",
                                    warning: "Be very afraid",
                                    decline_confirmation: "OK fine",
+                                   finish_confirmation: "Congrats",
                                    location_invite: "rooted, SF, or Ebay?",
                                    completed_challenges_required: 3,
                                    start_time: DateTime.new(2020,1,1)})}
