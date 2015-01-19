@@ -41,9 +41,6 @@ class Participant < ActiveRecord::Base
     self.current_challenge = nil
   end
 
-  def finished_mission?
-    self.uncompleted_challenges().empty?
-  end
 
    # Confirming interest
 
@@ -94,14 +91,35 @@ class Participant < ActiveRecord::Base
   end
 
   def next_challenge(location)
-    self.uncompleted_challenges.reject {|c| c.location != location}[0]
+    self.uncompleted_challenges.reject {|c| !matches_text(location, c.location) }[0]
   end
 
   def assign_to_next_challenge(location)
     self.assign_to_challenge(self.next_challenge(location))
   end
 
+  def assign_to_last_challenge
+    self.assign_to_challenge(self.mission.last_challenge)
+  end
+
   # Checking responses
+
+  def completed_challenges_required
+    self.mission.completed_challenges_required
+  end
+
+  def finished_mission?
+    self.completed_challenges.length == self.completed_challenges_required
+  end
+
+  def should_be_sent_to_last_challenge?
+    self.completed_challenges.length == self.completed_challenges_required - 1
+  end
+
+  def finished_the_last_challenge?
+    self.completed_challenges.include?(self.mission.last_challenge)
+  end
+
   def check_response(response, messages)
     response = Response.create_with_associations(response_text: response,
     challenge: self.current_challenge, participant: self)
@@ -109,6 +127,11 @@ class Participant < ActiveRecord::Base
       response.mark_correct
       if self.finished_mission?
         messages.push("Congratulations, you finished!")
+      elsif self.should_be_sent_to_last_challenge?
+        messages.push(response.challenge.response_success)
+        self.unassign_from_challenge
+        self.assign_to_last_challenge
+        messages.push(self.current_challenge.question)
       else # Move them along to the next challenge
         messages.push(response.challenge.response_success)
         messages.push(self.mission.location_invite)

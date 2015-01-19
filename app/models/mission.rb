@@ -15,6 +15,9 @@ class Mission < ActiveRecord::Base
 
   validate :start_time_is_after_today
 
+  def last_challenge
+    challenges.last
+  end
 
   private
     def start_time_is_after_today

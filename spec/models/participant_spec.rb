@@ -126,19 +126,7 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
     end
   end
 
-  describe "#finished_mission?" do
-    it "should return true when a participant has finished a mission" do
-      participant.mission = mission
-      mission.challenges.each do |challenge|
-          Response.create_with_associations(response_text: "hey", challenge: challenge, participant: participant).mark_correct
-      end
-      expect(participant.finished_mission?).to be true
-    end
-    it "should return false otherwise" do
-      participant.mission = mission
-      expect(participant.finished_mission?).to be false
-    end
-  end
+
 
   describe "when confirming interest" do
     before(:each) do
@@ -202,6 +190,7 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
     end
   end
 
+
   describe "when assigning challenges" do
     before(:each) do
       participant.mission = mission
@@ -230,13 +219,15 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
         expect([challenge2, challenge3]).to include(next_challenge)
       end
       it "can give another challenge of the same type" do
-        response = Response.create(text: "hey2")
-        response.participant = participant
-        response.challenge = challenge2
-        response.mark_correct
-
+        Response.create_with_associations(text: "hey2",
+                                          participant: participant,
+                                          challenge: challenge2).mark_correct
         next_challenge = participant.next_challenge("East Bay")
         expect(next_challenge).to eq(challenge3)
+      end
+      it "isn't fussy about the way the location is spelled" do
+        next_challenge = participant.next_challenge("  east bay   ")
+        expect([challenge2, challenge3]).to include(next_challenge)
       end
     end
 
@@ -248,22 +239,90 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
     end
   end
 
-  # When deciding the next message to send
-    # 1: participant just responded to a challenge
-      # a. participant is correct
-        # i. they finished the game
-          # - congratulate them
-        # ii. they're not finished
-          # - give them response_success
-          # - set current_challenge to nil
-          # - ask them what type of challenge they want next
-      # b. participant is wrong
-        # - give them response_failure
-      # c. LATER: it's a picture challenge
-        # - tell them we're checking on it
-    # 2. participant is saying what challenge they want
-      # assign them to a challenge of the type they want
-      # send them the challenge question
+  describe "#assign_to_last_challenge" do
+    it "should assign a participant to the last challenge" do
+      participant.mission = mission
+      Response.create_with_associations(response_text: "hey", challenge: challenge1, participant: participant).mark_correct
+      Response.create_with_associations(response_text: "hey", challenge: challenge2, participant: participant).mark_correct
+
+      participant.assign_to_last_challenge
+      expect(participant.current_challenge).to eq(challenge3)
+    end
+  end
+
+  describe "when checking responses" do
+    describe "#finished_mission?" do
+      it "should return true if the participant's done all the challenges" do
+        participant.mission = mission
+        mission.challenges.each do |challenge|
+          Response.create_with_associations(response_text: "hey", challenge: challenge, participant: participant).mark_correct
+        end
+
+        expect(participant.finished_mission?).to be true
+      end
+    end
+    describe "#should_be_sent_to_last_challenge?" do
+      it "should return true if the participant's done almost all the challenges" do
+        participant.mission = mission
+        Response.create_with_associations(response_text: "hey", challenge: challenge1, participant: participant).mark_correct
+        Response.create_with_associations(response_text: "hey", challenge: challenge2, participant: participant).mark_correct
+
+        expect(participant.should_be_sent_to_last_challenge?).to eq(true)
+      end
+    end
+    describe "#finished_the_last_challenge?" do
+      it "should return true if the participant's done all the challenges" do
+        participant.mission = mission
+        Response.create_with_associations(response_text: "hey", challenge: challenge3, participant: participant).mark_correct
+
+        expect(participant.finished_the_last_challenge?).to be true
+      end
+    end
+
+    describe "#check_response" do
+      before(:each) do
+        participant.mission = mission
+      end
+      let! (:messages) { [] }
+      context "if their answer is correct" do
+        context "if participant has done all but the last challenge" do
+          it "should assign them to the last challenge" do
+            Response.create_with_associations(response_text: "hey", challenge: challenge1, participant: participant).mark_correct
+            participant.assign_to_challenge(challenge2)
+            challenge2.answers.create({text: 'whoop'})
+
+            participant.check_response("whoop", messages)
+            expect(messages).to include(challenge2.response_success)
+            expect(messages).to include(challenge3.question)
+            expect(participant.current_challenge).to eq(challenge3)
+          end
+        end
+        context "if their last answer completes the mission" do
+          it "should congratulate them on ending the mission" do
+            [challenge1, challenge2].each do |challenge|
+              Response.create_with_associations(response_text: "hey", challenge: challenge, participant: participant).mark_correct
+            end
+            challenge3.answers.create({text: "yay"})
+            participant.assign_to_last_challenge
+
+            participant.check_response("yay", messages)
+            expect(messages).to include("Congratulations, you finished!")
+          end
+        end
+        context "if they are nowhere near the end" do
+          it "should just ask them the next location" do
+            participant.assign_to_challenge(challenge1)
+            challenge1.answers.create({text: "ok"})
+
+            participant.check_response("  ok ", messages)
+            expect(messages).to include(challenge1.response_success)
+            expect(messages).to include(participant.mission.location_invite)
+          end
+        end
+      end
+    end
+  end
+
   describe "#next_messages" do
     context "if participant hasn't confirmed participation" do
       before do
@@ -275,7 +334,7 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
       end
     end
     context "if participant has confirmed participation" do
-      context "if participant isn't assigned to a challenge" do
+      context "if participant just selected a challenge location" do
         it "should respond with a challenge question" do
           participant.mission = mission
           next_messages = participant.next_messages(response_text: "SF")
@@ -283,38 +342,12 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
           expect(next_messages).to include(challenge1.question)
         end
       end
-      context "if a participant is solving a challenge, but it isn't the last" do
-        before(:each) do
+      context "if participant just responded to a challenge" do
+        it "should call #check_response" do
           participant.mission = mission
-          response = Response.create_with_associations(response_text: "hey", challenge: challenge2, participant: participant)
-          response.mark_correct
-          challenge1.answers.create({text: "hooray"})
-          participant.assign_to_next_challenge(challenge1.location)
-        end
-        it "should give them a success response and ask where they want the next challenge to be located" do
-          next_messages = participant.next_messages(response_text: "hooray")
-          expect(next_messages).to include(challenge1.response_success)
-          expect(next_messages).to include(mission.location_invite)
-          expect(participant.current_challenge).to be nil
-        end
-        it "should tell them they're wrong otherwise" do
-          expect(participant.next_messages(response_text: "whoa so wrong")).to include(challenge1.response_failure || "Sorry, wrong answer!")
-        end
-      end
-      context "if participant is on their last challenge" do
-        before(:each) do
-          participant.mission = mission
-          [challenge1, challenge2].each do |challenge|
-            Response.create_with_associations(response_text: "hey", challenge: challenge, participant: participant).mark_correct
-          end
-          challenge3.answers.create({text: "incandescent"})
-          participant.assign_to_next_challenge(challenge3.location)
-        end
-        it "should congratulate them when they get it right" do
-          expect(participant.next_messages(response_text: "incandescent")).to include("Congratulations, you finished!")
-        end
-        it "should tell them they're wrong otherwise" do
-          expect(participant.next_messages(response_text: "whoa so wrong")).to include(challenge3.response_failure || "Sorry, wrong answer!")
+          participant.assign_to_challenge(challenge1)
+          expect(participant).to receive(:check_response).with("Yay", [])
+          participant.next_messages(response_text: "Yay")
         end
       end
     end
