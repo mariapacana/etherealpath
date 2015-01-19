@@ -2,7 +2,9 @@ class Answer < ActiveRecord::Base
   belongs_to :challenge
   validates :text, presence: true
 
-  def matches_text(text)
-    text.downcase.match(self.text.downcase) ? true : false
+  include StringHelper
+
+  def matches(text)
+    matches_text(text, self.text)
   end
 end

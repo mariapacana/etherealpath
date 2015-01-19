@@ -26,7 +26,7 @@ class Response < ActiveRecord::Base
   def is_correct?
     return true if self.challenge.any_answer_acceptable
     self.challenge.answers.each do |answer|
-      return true if answer.matches_text(self.text)
+      return true if answer.matches(self.text)
     end
     false
   end
