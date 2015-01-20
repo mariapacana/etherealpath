@@ -1,0 +1,44 @@
+= form_for @mission do |f|
+  .field
+    = f.label :title
+    %br
+    = f.text_field :title, :size => 101
+  .field
+    = f.label(:start_time, 'Start Time')
+    %br
+    = f.datetime_select(:start_time, :start_year => 2015, :minute_step => 15)
+  .field
+    = f.label :description
+    %br
+    = f.text_area :description, :rows => 2, :cols => 100
+  .field
+    = f.label :intro
+    %br
+    = f.text_area :intro, :cols => 100
+  .field
+    = f.label :warning
+    %br
+    = f.text_area :warning, :cols => 100
+  .field
+    = f.label(:decline_confirmation, "Decline Confirmation")
+    %br
+    = f.text_area :decline_confirmation, :cols => 100
+  .field
+    = f.label(:finish_confirmation, "Finish Confirmation")
+    %br
+    = f.text_area :finish_confirmation, :cols => 100
+  .field
+    = f.label(:location_invite, "Location Invite")
+    %br
+    = f.text_field :location_invite, :size => 101
+  .field
+    = f.label(:completed_challenges_required, "Challenges Required to Complete")
+    %br
+    = f.number_field(:completed_challenges_required, in: 1.0..10.0, step: 1.0)
+  %h3 Challenges
+  #challenges
+    = f.fields_for :challenges do |challenge|
+      = render 'challenge_fields', :f => challenge
+    .links
+      = link_to_add_association 'add challenge', f, :challenges
+  = f.submit
