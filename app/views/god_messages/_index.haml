@@ -1,0 +1,9 @@
+%h4 All Ethereal Messages
+
+%ul(id='god_messages_index')
+  - god_messages.each do |message|
+    - if message.valid?
+      %li
+        %p= message.text
+        %p Location: #{message.location}
+        %p Time Sent: #{message.created_at}

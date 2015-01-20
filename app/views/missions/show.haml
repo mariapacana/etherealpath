@@ -49,4 +49,11 @@
           %li
             %p= answer.text
 
+%h3(id='god_messages') Ethereal Messages
+
+= render :partial =>  'god_messages/new', :locals => {:god_message => @mission.god_messages.build}
+
+= render :partial =>  'god_messages/index', :locals => {:god_messages => @mission.god_messages}
+
+
 = link_to 'Edit Mission', edit_mission_path

@@ -13,6 +13,7 @@ RSpec.describe Mission, :type => :model do
 
   describe "#initialize" do
     it { should have_many(:challenges)}
+    it { should have_many(:god_messages)}
     it { should validate_presence_of(:title)}
     it { should validate_presence_of(:start_time)}
     it { should validate_presence_of(:description)}

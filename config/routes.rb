@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   root 'homepage#show'
 
-  resources :missions
+  resources :missions do
+    resources :god_messages
+  end
 
   resources :users
   match '/signup',  to: 'users#new', via: [:get]

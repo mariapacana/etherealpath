@@ -1,6 +1,7 @@
 class Mission < ActiveRecord::Base
   has_many :challenges
   has_many :participants
+  has_many :god_messages
   accepts_nested_attributes_for :challenges, :reject_if => :all_blank, :allow_destroy => true
 
   validates :title,
@@ -28,22 +29,30 @@ class Mission < ActiveRecord::Base
     self.participants.current_and_in_east_bay
   end
 
-  # def hand_of_god(participants, message)
-  #   client = new TwilioClient
-  #   participants.each {|p| client.send_message(p.phone, message)}
-  # end
+  def hand_of_god(params)
+    self.god_messages.create(text: params[:message],
+                             location: params[:location])
+    params[:participants].each do |p|
+      message = p.messages.create({text: params[:message], incoming: false})
+      message.send_by_sms
+    end
+  end
 
-  # def start
-  #   hand_of_god(self.current_participants, self.intro)
-  # end
+  def start
+    hand_of_god(participants: self.current_participants, message: self.intro)
+  end
 
-  # def hand_of_god_east_bay(message)
-  #   hand_of_god(self.current_participants_in_east_bay, message)
-  # end
+  def hand_of_god_east_bay(message)
+    hand_of_god(participants: self.current_participants_in_east_bay,
+                location: "East Bay",
+                message: message)
+  end
 
-  # def hand_of_god_east_sf(message)
-  #   hand_of_god(self.current_participants_in_sf, message)
-  # end
+  def hand_of_god_east_sf(message)
+    hand_of_god(participants: self.current_participants_in_sf,
+                location: "SF",
+                message: message)
+  end
 
   def last_challenge
     challenges.last

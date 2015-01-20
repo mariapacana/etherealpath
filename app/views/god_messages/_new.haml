@@ -1,0 +1,12 @@
+%h4(id='god_messages_new') Send New Message
+
+= form_for(god_message, url: mission_god_messages_path(god_message.mission.id), remote: true, :html => {:id => "god_messages_form"} ) do |f|
+  .field
+    = f.label(:text, "Ethereal Message")
+    %br
+    = f.text_area :text, :cols => 100
+  .field
+    = f.label(:location, "Location")
+    %br
+    = f.select(:location, options_for_select([['SF', 'SF'],                                        ['East Bay', 'East Bay']]))
+  = f.submit

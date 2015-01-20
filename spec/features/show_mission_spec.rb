@@ -26,7 +26,7 @@ feature "creating new missions" do
 
   scenario "logged-in user can create a new mission" do
     page.set_rack_session(:user_id => @user.id)
-    page.visit '/missions/1'
+    page.visit "/missions/#{@mission.id}"
     expect(page).to have_selector("h1", text: @mission.title)
     expect(page).to have_selector("li p", text: @mission.start_time)
     expect(page).to have_selector("li p", text: @mission.description)
@@ -43,6 +43,14 @@ feature "creating new missions" do
     expect(page).to have_selector("li p", text: @challenge1.any_answer_acceptable)
     expect(page).to have_selector("li b", text: "Answers")
     expect(page).to have_selector("li ul li p", text: @answer1.text)
+    expect(page).to have_selector("li ul li p", text: @answer1.text)
   end
 
+  scenario "logged-in user can create hand-of-god message" do
+    page.set_rack_session(:user_id => @user.id)
+    page.visit "/missions/#{@mission.id}"
+    fill_in('text', :with => 'I am the Lord')
+    select('East Bay', :from => 'Location')
+    expect(page).to have_content('I am the Lord')
+  end
 end
