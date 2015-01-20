@@ -1,9 +1,52 @@
 %h1= @mission.title
-%p= @mission.start_time
-%p= @mission.description
-
 %ul
-  - @mission.challenges.each do |challenge|
-    %li= challenge.question
+  %li
+    %b Start Time
+    %p #{@mission.start_time}
+  %li
+    %b Description
+    %p #{@mission.description}
+  %li
+    %b Intro
+    %p #{@mission.intro}
+  %li
+    %b Warning
+    %p #{@mission.warning}
+  %li
+    %b Decline Confirmation
+    %p #{@mission.decline_confirmation}
+  %li
+    %b Finish Confirmation
+    %p #{@mission.finish_confirmation}
+  %li
+    %b Location Invite
+    %p #{@mission.location_invite}
+  %li
+    %b Number of Required Challenges
+    %p #{@mission.completed_challenges_required}
+
+%h3 Challenges
+
+- @mission.challenges.each do |challenge|
+  %b Challenge #{challenge.id}
+  %ul
+    %li
+      %b Question
+      %p= challenge.question
+    %li
+      %b Response on Success
+      %p= challenge.response_success
+    %li
+      %b Response on Failure
+      %p= challenge.response_failure
+    %li
+      %b Any Answer OK
+      %p= challenge.any_answer_acceptable
+    %li
+      %b Answers
+      %ul
+        - challenge.answers.each do |answer|
+          %li
+            %p= answer.text
 
 = link_to 'Edit Mission', edit_mission_path
