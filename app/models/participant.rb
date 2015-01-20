@@ -7,6 +7,9 @@ class Participant < ActiveRecord::Base
 
   validates :first_name, :last_name, presence: true
 
+  scope :current, -> { where(declined: [nil, false]) }
+  scope :not_current, -> { where(declined: true) }
+
   include StringHelper
 
   def self.find_by_name_or_code(params = {})
@@ -21,12 +24,30 @@ class Participant < ActiveRecord::Base
     participant
   end
 
+  # Locations
+
+  def self.current_and_in_sf
+    self.current.select {|e| e.in_sf }
+  end
+
+  def self.current_and_in_east_bay
+    self.current.select {|e| e.in_east_bay }
+  end
+
+  def in_east_bay
+    self.current_challenge.location == "East Bay"
+  end
+
+  def in_sf
+    self.current_challenge.location == "SF"
+  end
+
   def assign_to_challenge(challenge)
-    self.current_challenge = challenge
+    self.update_attribute(:current_challenge_id, challenge.id)
   end
 
   def assign_to_mission(mission)
-    self.mission = mission
+    self.update_attribute(:mission_id, mission.id)
   end
 
   def not_on_a_mission?
@@ -40,7 +61,6 @@ class Participant < ActiveRecord::Base
   def unassign_from_challenge
     self.current_challenge = nil
   end
-
 
    # Confirming interest
 
@@ -59,20 +79,20 @@ class Participant < ActiveRecord::Base
   def confirm_interest(response)
     if self.has_accepted_neither_intro_nor_warning
       if matches_text(response, "Yes")
-        self.intro_accepted = true
+        self.update_attribute(:intro_accepted, true)
         message = self.mission.warning
       else
-        self.intro_accepted = false
-        self.declined = true
+        self.update_attribute(:intro_accepted, false)
+        self.update_attribute(:declined, true)
         message = self.mission.decline_confirmation
       end
     elsif self.has_accepted_only_intro
       if matches_text(response, "No")
-        self.warning_accepted = false
-        self.declined = true
+        self.update_attribute(:warning_accepted, false)
+        self.update_attribute(:declined, true)
         message = self.mission.decline_confirmation
       else
-        self.warning_accepted = true
+        self.update_attribute(:warning_accepted, true)
         message = self.mission.location_invite
       end
     end

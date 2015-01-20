@@ -161,14 +161,14 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
     describe "#confirm_interest" do
       context "when the participant accepts the intro" do
         it "should return the warning for the mission" do
-          expect(participant_unconfirmed.confirm_interest("Yes")).to be(mission.warning)
+          expect(participant_unconfirmed.confirm_interest("Yes")).to eq(mission.warning)
           expect(participant_unconfirmed.intro_accepted).to be true
           expect(participant_unconfirmed.declined).to be false
         end
       end
       context "when the participant rejects the intro" do
         it "should return the decline confirmation for the mission" do
-          expect(participant_unconfirmed.confirm_interest("No")).to be(mission.decline_confirmation)
+          expect(participant_unconfirmed.confirm_interest("No")).to eq(mission.decline_confirmation)
           expect(participant_unconfirmed.intro_accepted).to be false
           expect(participant_unconfirmed.declined).to be true
         end
@@ -176,14 +176,14 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
       context "when the participant accepts the warning" do
         it "should set the warning_accepted flag to true" do
           participant_unconfirmed.intro_accepted = true
-          expect(participant_unconfirmed.confirm_interest("Yeah")).to be(mission.location_invite)
+          expect(participant_unconfirmed.confirm_interest("Yeah")).to eq(mission.location_invite)
           expect(participant_unconfirmed.warning_accepted).to be true
         end
       end
       context "when the participant rejects the warning" do
         it "should set declined to true and warning_accepted to false" do
           participant_unconfirmed.intro_accepted = true
-          expect(participant_unconfirmed.confirm_interest("No")).to be(mission.decline_confirmation)
+          expect(participant_unconfirmed.confirm_interest("No")).to eq(mission.decline_confirmation)
           expect(participant_unconfirmed.warning_accepted).to be false
           expect(participant_unconfirmed.declined).to be true
         end
