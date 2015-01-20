@@ -1,5 +1,6 @@
 class Participant < ActiveRecord::Base
   belongs_to :mission
+  has_many :messages
   has_many :responses
   has_many :challenges, through: :responses
   belongs_to :current_challenge, class_name: "Challenge", :foreign_key => "current_challenge_id"
@@ -12,14 +13,14 @@ class Participant < ActiveRecord::Base
 
   include StringHelper
 
-  def self.find_by_name_or_code(params = {})
-    if phone_number = PhoneNumber.find_by(number: params[:phone])
-      participant = phone_number.participant
+  def self.find_by_phone_or_code(params)
+    participant = nil
+    if phone_number = PhoneNumber.find_by(number: params[:phone_number])
+      participant = Participant.find(phone_number.participant_id)
     end
-
     unless participant
       participant = Participant.find_by(code: params[:code])
-      participant.phone_numbers.create(number: params[:phone]) if participant
+      participant.phone_numbers.create(number: params[:phone_number]) if participant
     end
     participant
   end
@@ -93,7 +94,12 @@ class Participant < ActiveRecord::Base
         message = self.mission.decline_confirmation
       else
         self.update_attribute(:warning_accepted, true)
-        message = self.mission.location_invite
+        if self.trial_run
+          self.assign_to_next_challenge("rooted")
+          message = self.current_challenge.question
+        else
+          message = self.mission.location_invite
+        end
       end
     end
     message
@@ -111,7 +117,7 @@ class Participant < ActiveRecord::Base
   end
 
   def next_challenge(location)
-    self.uncompleted_challenges.reject {|c| !matches_text(location, c.location) }[0]
+  self.uncompleted_challenges.reject {|c| !matches_text(location, c.location) }[0]
   end
 
   def assign_to_next_challenge(location)
@@ -154,30 +160,16 @@ class Participant < ActiveRecord::Base
         messages.push(self.current_challenge.question)
       else # Move them along to the next challenge
         messages.push(response.challenge.response_success)
-        messages.push(self.mission.location_invite)
+        messages.push(self.mission.location_invite) unless self.trial_run
         self.unassign_from_challenge
+        if self.trial_run
+          self.assign_to_next_challenge("rooted")
+          messages.push(self.current_challenge.question)
+        end
       end
     else
       messages.push(current_challenge.response_failure || "Sorry, wrong answer!")
     end
   end
 
-  # When deciding the next message to send
-  def next_messages(params)
-    messages = []
-    if self.participation_unconfirmed
-      messages.push(self.confirm_interest(params[:response_text]))
-    # Participation confirmed
-    else
-      # Participant is selecting a location
-      if self.unassigned_to_a_challenge
-        self.assign_to_next_challenge(params[:response_text])
-        messages.push(self.current_challenge.question)
-      else
-        # Participant is sending a response
-        self.check_response(params[:response_text], messages)
-      end
-    end
-    messages
-  end
 end

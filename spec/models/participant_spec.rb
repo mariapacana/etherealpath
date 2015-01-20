@@ -50,6 +50,7 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
 
   describe "#initialize" do
     it { should have_many(:phone_numbers)}
+    it { should have_many(:messages)}
     it { should have_many(:responses)}
     it { should have_many(:challenges).through(:responses) }
     it { should belong_to(:current_challenge).with_foreign_key(:current_challenge_id) }
@@ -57,17 +58,17 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
     it { should validate_presence_of(:last_name)}
   end
 
-  describe ".find_by_name_or_code" do
+  describe ".find_by_phone_or_code" do
     let(:number) {"+16666666666"}
     context "with a participant that has a phone" do
       it "should return the correct participant given the number" do
         participant_with_phone.phone_numbers.create(number: number)
-        expect(Participant.find_by_name_or_code(phone: number, code: "")).to eq(participant_with_phone)
+        expect(Participant.find_by_phone_or_code(phone_number: number, code: "")).to eq(participant_with_phone)
       end
     end
     context "with a participant that has a code" do
       it "should return the correct participant given the code" do
-        participant = Participant.find_by_name_or_code(phone: number, code: "6666")
+        participant = Participant.find_by_phone_or_code(phone_number: number, code: "6666")
         expect(participant).to eq(participant_with_code)
         expect(PhoneNumber.find_by(number: number).participant).to eq(participant_with_code)
       end
@@ -126,8 +127,6 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
       expect(participant.current_challenge).to be nil
     end
   end
-
-
 
   describe "when confirming interest" do
     before(:each) do
@@ -191,10 +190,10 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
     end
   end
 
-
   describe "when assigning challenges" do
     before(:each) do
       participant.mission = mission
+      message = participant.messages.new(text: "hey")
       response = Response.new(text: "hey")
       response.participant = participant
       response.challenge = challenge1
@@ -258,7 +257,6 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
         mission.challenges.each do |challenge|
           Response.create_with_associations(response_text: "hey", challenge: challenge, participant: participant).mark_correct
         end
-
         expect(participant.finished_mission?).to be true
       end
     end
@@ -319,36 +317,6 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
             expect(messages).to include(challenge1.response_success)
             expect(messages).to include(participant.mission.location_invite)
           end
-        end
-      end
-    end
-  end
-
-  describe "#next_messages" do
-    context "if participant hasn't confirmed participation" do
-      before do
-        participant_unconfirmed.mission = mission
-      end
-      it "should call #confirm_interest" do
-        expect(participant_unconfirmed).to receive(:confirm_interest).with("Yes")
-        participant_unconfirmed.next_messages(response_text: "Yes")
-      end
-    end
-    context "if participant has confirmed participation" do
-      context "if participant just selected a challenge location" do
-        it "should respond with a challenge question" do
-          participant.mission = mission
-          next_messages = participant.next_messages(response_text: "SF")
-          expect(participant.current_challenge).to eq(challenge1)
-          expect(next_messages).to include(challenge1.question)
-        end
-      end
-      context "if participant just responded to a challenge" do
-        it "should call #check_response" do
-          participant.mission = mission
-          participant.assign_to_challenge(challenge1)
-          expect(participant).to receive(:check_response).with("Yay", [])
-          participant.next_messages(response_text: "Yay")
         end
       end
     end
