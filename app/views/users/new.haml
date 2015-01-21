@@ -20,11 +20,15 @@
   .field
     = f.label :password
     %br
-    = f.text_field :password
+    = f.password_field :password
   .field
     = f.label :password_confirmation
     %br
-    = f.text_field :password_confirmation
+    = f.password_field :password_confirmation
   = f.submit
 
-
+- if @user.errors.any?
+  %h3 Errors
+  %ul
+    - @user.errors.full_messages.each do |msg|
+      %li= msg

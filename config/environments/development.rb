@@ -42,7 +42,8 @@ Rails.application.configure do
       :bucket => Rails.application.secrets.S3_BUCKET_NAME,
       :access_key_id => Rails.application.secrets.AWS_ACCESS_KEY_ID,
       :secret_access_key => Rails.application.secrets.AWS_SECRET_ACCESS_KEY
-    }
+    },
+    :s3_permissions => :private
   }
 
   Paperclip.options[:command_path] = "/usr/bin/"

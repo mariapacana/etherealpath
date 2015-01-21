@@ -8,7 +8,7 @@
   .field
     = f.label :password
     %br
-    = f.text_field :password
+    = f.password_field :password
   = f.submit(value='Sign In')
 
 = flash[:error] if flash[:error]

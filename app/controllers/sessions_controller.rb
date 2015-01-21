@@ -1,6 +1,8 @@
 class SessionsController < ApplicationController
   include SessionsHelper
 
+  skip_before_filter :require_login
+
   def new
   end
 
@@ -11,7 +13,7 @@ class SessionsController < ApplicationController
       redirect_to root_path
     else
       flash.now[:error] = "Invalid username/password combination"
-      render 'new'
+      render :new
     end
   end
 

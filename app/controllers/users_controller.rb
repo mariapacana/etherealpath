@@ -1,6 +1,8 @@
 class UsersController < ApplicationController
   include SessionsHelper
 
+  skip_before_filter :require_login
+
   def user_params
     params.require(:user).permit(:first_name, :last_name, :phone_number, :email, :password, :password_confirmation)
   end
