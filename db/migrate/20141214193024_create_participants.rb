@@ -8,6 +8,7 @@ class CreateParticipants < ActiveRecord::Migration
       t.boolean :declined
       t.boolean :intro_accepted
       t.boolean :warning_accepted
+      t.boolean :trial_run
       t.belongs_to :mission
       t.timestamps
     end
