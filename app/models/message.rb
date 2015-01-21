@@ -3,6 +3,8 @@ class Message < ActiveRecord::Base
   validates :text,
             presence: true
 
+  include StringHelper
+
   def reply_from_ether
     self.replies_from_ether.each do |reply|
       reply_message = self.participant.messages.create({text: reply,
@@ -13,7 +15,13 @@ class Message < ActiveRecord::Base
 
   def replies_from_ether
     replies = []
-    if self.participant.participation_unconfirmed
+    if self.is_a_cry_for_help
+      self.participant.flag_for_help
+      User.help_alert
+      replies.push("What's the trouble, sweet thing? Be patient, and a voice may respond shortly.")
+    elsif self.participant.needs_help
+      User.help_alert
+    elsif self.participant.participation_unconfirmed
       replies.push(self.participant.confirm_interest(self.text))
     # Participation confirmed
     else
@@ -33,4 +41,9 @@ class Message < ActiveRecord::Base
     client = TwilioClient.new
     client.send_message(self.participant.phone_numbers.first.number, self.text)
   end
+
+  def is_a_cry_for_help
+    matches_text(self.text, "angel")
+  end
+
 end

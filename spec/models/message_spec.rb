@@ -42,9 +42,23 @@ RSpec.describe Message, :type => :model do
     it { should validate_presence_of(:text)}
   end
 
+  describe "#is_a_cry_for_help" do
+    let(:plea) {participant.messages.create({text: "angel"})}
+    it "should return true if the text includes angel" do
+      expect(plea.is_a_cry_for_help).to be true
+    end
+  end
+
   describe "#replies_from_ether" do
     before { participant_unconfirmed.mission = mission }
     before { participant.mission = mission }
+    context "if participant is asking for help" do
+      it "should flag the participant as needing help" do
+        message = participant.messages.create({text: "angel", incoming: true})
+        expect(message.replies_from_ether).to include("What's the trouble, sweet thing? Be patient, and a voice may respond shortly.")
+        expect(participant.needs_help).to be true
+      end
+    end
     context "if participant hasn't confirmed participation" do
       let(:message) {participant_unconfirmed.messages.create({text: "Yes"})}
       it "should call #confirm_interest" do

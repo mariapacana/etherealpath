@@ -10,6 +10,7 @@ class Participant < ActiveRecord::Base
 
   scope :current, -> { where(declined: [nil, false]) }
   scope :not_current, -> { where(declined: true) }
+  scope :needs_help, -> { where(needs_help: true) }
 
   include StringHelper
 
@@ -23,6 +24,28 @@ class Participant < ActiveRecord::Base
       participant.phone_numbers.create(number: params[:phone_number]) if participant
     end
     participant
+  end
+
+  # Flag for help
+  def toggle_help
+    self.needs_help ? self.unflag_for_help : self.flag_for_help
+  end
+
+  def flag_for_help
+    self.update_attribute(:needs_help, true)
+  end
+
+  def unflag_for_help
+    self.update_attribute(:needs_help, false)
+  end
+
+  # Messages
+  def last_message_sent
+    self.messages.order(id: :desc).where(incoming: true).limit(1)[0]
+  end
+
+  def message_history
+    self.messages.reverse.select {|m| m.valid? }
   end
 
   # Locations

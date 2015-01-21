@@ -74,6 +74,7 @@ ActiveRecord::Schema.define(version: 20150120212310) do
     t.boolean  "intro_accepted"
     t.boolean  "warning_accepted"
     t.boolean  "trial_run"
+    t.boolean  "needs_help"
     t.integer  "mission_id"
     t.datetime "created_at"
     t.datetime "updated_at"

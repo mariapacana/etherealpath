@@ -75,6 +75,23 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
     end
   end
 
+  # Messages
+  describe "#last_message_sent" do
+    it "was the last message the participant sent" do
+      message = participant.messages.create({text: "Hey", incoming: true})
+      expect(participant.last_message_sent).to eq(message)
+    end
+  end
+
+  describe "#message_history" do
+    it "lists the messages between the participant and the app in order" do
+      message1 = participant.messages.create({text: "Hey", incoming: true})
+      message2 = participant.messages.create({text: "Hey", incoming: false})
+      message3 = participant.messages.create({text: "Hey", incoming: true})
+      expect(participant.message_history).to eq([message3, message2, message1])
+    end
+  end
+
   describe "#assign_to_challenge" do
     it "assigns participant to a challenge" do
       participant.assign_to_challenge(challenge1)
@@ -89,6 +106,7 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
       expect(participant.mission).to eq(mission)
     end
   end
+
 
   describe "#not_on_a_mission?" do
     context "when a participant doesn't have a mission" do

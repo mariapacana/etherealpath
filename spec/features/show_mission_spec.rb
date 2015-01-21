@@ -49,7 +49,7 @@ feature "creating new missions" do
   scenario "logged-in user can create hand-of-god message" do
     page.set_rack_session(:user_id => @user.id)
     page.visit "/missions/#{@mission.id}"
-    fill_in('text', :with => 'I am the Lord')
+    fill_in('Ethereal Message', :with => 'I am the Lord')
     select('East Bay', :from => 'Location')
     expect(page).to have_content('I am the Lord')
   end

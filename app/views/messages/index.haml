@@ -1,0 +1,17 @@
+%h1 Messages with #{@participant.first_name} #{@participant.last_name}
+
+= render :partial =>  'messages/new', :locals => {:message => @participant.messages.build}
+
+%h4 All Messages
+
+%ul(id='messages_index')
+  - @messages.each do |message|
+    - if message.incoming
+      %li(class="message_from_participant")
+        %p= message.text
+    - else
+      %li(class="message_from_ep")
+        %p
+          %b= message.text
+
+= button_to @participant_help_button_text, participant_path(@participant), method: :put, remote: true, form_class: 'help', class: @participant_help_button_status

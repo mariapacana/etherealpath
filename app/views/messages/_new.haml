@@ -1,0 +1,8 @@
+= form_for(message, url: participant_messages_path(message.participant.id), remote: true, :html => {:id => "messages_form"}) do |f|
+  .field
+    = f.label(:text, "Ethereal Help Desk Message")
+    %br
+    = f.text_area :text, :cols => 100
+  = f.submit
+
+

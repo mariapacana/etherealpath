@@ -4,6 +4,7 @@
     - if logged_in?
       %li= link_to 'Create Mission', new_mission_path
       %li= link_to 'All Missions', missions_path
+      %li= link_to 'Help Desk', help_path
       %li= link_to 'Sign Out', signout_path
     - else
       %li= link_to 'Sign Up', signup_path
