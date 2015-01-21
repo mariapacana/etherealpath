@@ -13,7 +13,9 @@ class TwilioController < ApplicationController
     if participant
       message = participant.messages.create({text: params['Body'],
                                              incoming: true})
-      message.reply_from_ether
+      Rails.env.development? ? message.reply_from_ether : message.delay.reply_from_ether
+      else
+
     end
 
     render status: 200, json: @controller.to_json

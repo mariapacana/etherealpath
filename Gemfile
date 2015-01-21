@@ -54,6 +54,9 @@ gem 'paperclip'
 # Add AWS for storage
 gem 'aws-sdk'
 
+# Add Delayed Job
+gem 'delayed_job_active_record'
+
 # Set up testing
 group :test do
   gem 'rspec-rails', '~> 3.1.0'

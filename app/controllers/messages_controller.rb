@@ -19,7 +19,7 @@ class MessagesController < ApplicationController
 
     respond_to do |format|
       if @message.save
-        @message.send_by_sms
+        Rails.env.development? ? @message.send_by_sms : @message.delay.send_by_sms
         format.js {} #to call create.js and prepend partial
         format.json { render json: @message, status: :created, location: @participant_message }
       else
