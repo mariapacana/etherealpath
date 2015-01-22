@@ -18,4 +18,5 @@ Rails.application.routes.draw do
   match '/receive_sms', to: 'twilio#receive_sms', via: [:get, :post]
 
   match '/help', to: 'participants#index', via: [:get]
+  match '/add_participants', to: 'missions#add_participants', via: [:post]
 end

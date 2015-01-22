@@ -1,3 +1,5 @@
+require 'csv'
+
 class MissionsController < ApplicationController
 
   def mission_params
@@ -45,6 +47,20 @@ class MissionsController < ApplicationController
       # show error message if mission is invalid
       render :new
     end
+  end
+
+  def add_participants
+    @modelized_participants = []
+    @participants = CSV.read(params["Participant"].tempfile, headers: true, skip_blanks: true)
+    @participants.each do |p|
+      @modelized_participant = Participant.new({first_name: p['first_name'],last_name: p['last_name']})
+      # @modelized_participant.update_attribute(:code, p['code']) if p['code']
+      if @modelized_participant.save
+        @modelized_participant.phone_numbers.create({number: p['phone_number']})
+      end
+      @modelized_participants << @modelized_participant
+    end
+    redirect_to root_path
   end
 
   def show
