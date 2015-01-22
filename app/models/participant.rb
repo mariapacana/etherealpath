@@ -48,11 +48,11 @@ class Participant < ActiveRecord::Base
 
   # Messages
   def last_message_sent
-    self.messages.order(id: :desc).where(incoming: true).limit(1)[0]
+    self.messages.order(created_at: :desc).where(incoming: true).limit(1)[0]
   end
 
   def message_history
-    self.messages.reverse.select {|m| m.valid? }
+    self.messages.order(created_at: :desc).select {|m| m.valid? }
   end
 
   # Locations
