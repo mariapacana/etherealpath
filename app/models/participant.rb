@@ -28,7 +28,14 @@ class Participant < ActiveRecord::Base
 
   # Flag for help
   def toggle_help
-    self.needs_help ? self.unflag_for_help : self.flag_for_help
+    if self.needs_help
+      self.unflag_for_help
+      message = self.messages.create({text: self.current_challenge.question,
+                                      incoming: false })
+      message.delay.send_by_sms
+    else
+      self.flag_for_help
+    end
   end
 
   def flag_for_help
