@@ -30,9 +30,18 @@ class Participant < ActiveRecord::Base
   def toggle_help
     if self.needs_help
       self.unflag_for_help
-      message = self.messages.create({text: self.current_challenge.question,
-                                      incoming: false })
-      message.delay.send_by_sms
+      self.confirm_participation if self.participation_unconfirmed
+      messages = []
+      if self.participant.unassigned_to_a_challenge
+        messages.push(self.mission.location_invite)
+      else
+        messages.push(self.current_challenge.question)
+      end
+      messages = break_strings_on_octothorpes(messages)
+      messages.each do |m|
+        m = self.messages.create({text: m, incoming: false })
+        m.delay.send_by_sms
+      end
     else
       self.flag_for_help
     end
@@ -105,6 +114,11 @@ class Participant < ActiveRecord::Base
 
   def has_accepted_only_intro
     !warning_accepted && intro_accepted
+  end
+
+  def confirm_participation
+    self.update_attribute(:intro_accepted, true) unless self.intro_accepted
+    self.update_attribute(:warning_accepted, true) unless self.warning_accepted
   end
 
   def confirm_interest(response)
