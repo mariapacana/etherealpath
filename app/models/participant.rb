@@ -109,7 +109,7 @@ class Participant < ActiveRecord::Base
 
   def confirm_interest(response)
     if self.has_accepted_neither_intro_nor_warning
-      if matches_text(response, "Yes")
+      if is_yes(response)
         self.update_attribute(:intro_accepted, true)
         message = self.mission.warning
       else
@@ -118,7 +118,7 @@ class Participant < ActiveRecord::Base
         message = self.mission.decline_confirmation
       end
     elsif self.has_accepted_only_intro
-      if matches_text(response, "No")
+      if is_no(response)
         self.update_attribute(:warning_accepted, false)
         self.update_attribute(:declined, true)
         message = self.mission.decline_confirmation

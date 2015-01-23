@@ -176,9 +176,16 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
     end
 
     describe "#confirm_interest" do
-      context "when the participant accepts the intro" do
+      context "when the participant accepts the intro with 'Yes'" do
         it "should return the warning for the mission" do
           expect(participant_unconfirmed.confirm_interest("Yes")).to eq(mission.warning)
+          expect(participant_unconfirmed.intro_accepted).to be true
+          expect(participant_unconfirmed.declined).to be false
+        end
+      end
+      context "when the participant accepts the intro with 'y'" do
+        it "should return the warning for the mission" do
+          expect(participant_unconfirmed.confirm_interest("y")).to eq(mission.warning)
           expect(participant_unconfirmed.intro_accepted).to be true
           expect(participant_unconfirmed.declined).to be false
         end
