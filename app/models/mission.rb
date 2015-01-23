@@ -15,7 +15,7 @@ class Mission < ActiveRecord::Base
             :completed_challenges_required,
             presence: true
 
-  validate :start_time_is_after_today
+  validate :start_time_is_after_today, on: :create
 
   def current_participants
     self.participants.current

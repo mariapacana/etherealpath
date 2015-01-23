@@ -2,8 +2,7 @@
   .field
     = f.label :location
     %br
-    = f.select(:location, options_for_select([['SF', 'SF'],                                        ['East Bay', 'East Bay'],
-                                              ['rooted', 'rooted']]))
+    = f.select(:location, ['SF', 'East Bay', 'rooted'])
     %br
     = f.label :question
     %br
