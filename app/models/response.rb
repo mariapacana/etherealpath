@@ -25,10 +25,18 @@ class Response < ActiveRecord::Base
   end
 
   def is_correct?
-    return true if self.challenge.any_answer_acceptable
-    self.challenge.answers.each do |answer|
-      return true if answer.matches(self.text)
+    if self.challenge.needs_pic
+      return self.is_correct_for_pic_challenge?
+    else
+      return true if self.challenge.any_answer_acceptable
+      self.challenge.answers.each do |answer|
+        return true if answer.matches(self.text)
+      end
     end
     false
+  end
+
+  def is_correct_for_pic_challenge?
+    return true if self.picture
   end
 end
