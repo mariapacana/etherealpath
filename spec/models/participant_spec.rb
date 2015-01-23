@@ -41,7 +41,7 @@ RSpec.describe Participant, :type => :model do
                                                     intro_accepted: true,
                                                     warning_accepted: true,
                                                     declined: false) }
-let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
+  let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
                                                     last_name: "McWaffle",
                                                     code: "5555",
                                                     intro_accepted: false,
@@ -62,7 +62,8 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
     let(:number) {"+16666666666"}
     context "with a participant that has a phone" do
       it "should return the correct participant given the number" do
-        participant_with_phone.phone_numbers.create(number: number)
+        participant_with_phone.phone_numbers.create(number: number,
+                                                    preferred: true)
         expect(Participant.find_by_phone_or_code(phone_number: number, code: "")).to eq(participant_with_phone)
       end
     end
@@ -71,6 +72,14 @@ let!(:participant_unconfirmed) { Participant.create(first_name: "Waffly",
         participant = Participant.find_by_phone_or_code(phone_number: number, code: "6666")
         expect(participant).to eq(participant_with_code)
         expect(PhoneNumber.find_by(number: number).participant).to eq(participant_with_code)
+      end
+    end
+    context "with a participant coming from another number" do
+      it "should return the right participant and set preferred number to the other number" do
+        first_number = participant_with_code.phone_numbers.create(number: number, preferred: true)
+        expect(participant_with_code.preferred_number.number).to eq("+16666666666")
+        participant_with_code_from_other_number = Participant.find_by_phone_or_code(phone_number: "+15556666666", code: "6666")
+        expect(participant_with_code_from_other_number.preferred_number.number).to eq("+15556666666")
       end
     end
   end

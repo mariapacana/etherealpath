@@ -21,9 +21,19 @@ class Participant < ActiveRecord::Base
     end
     unless participant
       participant = Participant.find_by(code: params[:code])
-      participant.phone_numbers.create(number: params[:phone_number]) if participant
+      participant.create_preferred_phone_number(params[:phone_number]) if participant
     end
     participant
+  end
+
+  # Create and prefer a phone number
+  def create_preferred_phone_number(number)
+    self.phone_numbers.each {|p| p.unselect_preferred }
+    self.phone_numbers.create(number: number, preferred: true)
+  end
+
+  def preferred_number
+    self.phone_numbers.select {|n| n.preferred }.first
   end
 
   # Flag for help

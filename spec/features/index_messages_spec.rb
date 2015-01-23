@@ -10,7 +10,8 @@ feature "showing message history", :js => true do
     @participant1 = Participant.create({first_name: "RJD2",
                                        last_name: "D2",
                                        needs_help: true})
-    @participant1.phone_numbers.create({number: "+16502008405"})
+    @participant1.phone_numbers.create({number: "+16502008405",
+                                        preferred: true})
     @participant1.messages.create({text: "angel",
                                    incoming: true})
     @participant1.messages.create({text: "yes",

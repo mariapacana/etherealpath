@@ -39,7 +39,7 @@ class Message < ActiveRecord::Base
 
   def send_by_sms
     client = TwilioClient.new
-    client.send_message(self.participant.phone_numbers.first.number, self.text)
+    client.send_message(self.participant.preferred_number.number, self.text)
   end
 
   def is_a_cry_for_help

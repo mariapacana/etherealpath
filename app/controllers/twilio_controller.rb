@@ -7,8 +7,8 @@ class TwilioController < ApplicationController
     phone = params['From']
     client = TwilioClient.new
     participant = Participant.find_by_phone_or_code(phone_number: phone,
-                                                   code: params['Body'])
-    client.send_message(phone, "What's the passcode?") unless participant
+                                                   code: params['Body'].strip)
+    client.send_message(phone, "Pssst...what's the passcode (or your Eventbrite order number?)") unless participant
 
     # initial script
     if participant

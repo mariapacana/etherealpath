@@ -56,7 +56,8 @@ class MissionsController < ApplicationController
       @modelized_participant = Participant.new({first_name: p['first_name'],last_name: p['last_name']})
       # @modelized_participant.update_attribute(:code, p['code']) if p['code']
       if @modelized_participant.save
-        @modelized_participant.phone_numbers.create({number: p['phone_number']})
+        @modelized_participant.phone_numbers.create({number: p['phone_number'],
+                                                     preferred: true})
       end
       @modelized_participants << @modelized_participant
     end
