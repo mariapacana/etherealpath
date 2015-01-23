@@ -200,9 +200,9 @@ class Participant < ActiveRecord::Base
     self.completed_challenges.include?(self.mission.last_challenge)
   end
 
-  def check_response(response, messages)
-    response = Response.create_with_associations(response_text: response,
-    challenge: self.current_challenge, participant: self)
+  def check_response(params)
+    response = Response.create_with_associations(response_text: params[:response_text], picture_remote_url: params[:picture_remote_url], challenge: self.current_challenge, participant: self)
+    messages =f params[:replies]
     if response.is_correct?
       response.mark_correct
       if self.finished_mission?

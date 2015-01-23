@@ -13,6 +13,7 @@ class TwilioController < ApplicationController
     # initial script
     if participant
       message = participant.messages.create({text: params['Body'],
+                                             picture_remote_url: params['MediaUrl0'],
                                              incoming: true})
       Rails.env.development? ? message.reply_from_ether : message.delay.reply_from_ether
       else
