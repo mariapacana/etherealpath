@@ -34,7 +34,7 @@ class Message < ActiveRecord::Base
         self.participant.check_response(self.text, replies)
       end
     end
-    replies
+    break_strings_on_octothorpes(replies)
   end
 
   def send_by_sms
