@@ -35,7 +35,7 @@ RSpec.describe Message, :type => :model do
                                                       code: "5555",
                                                       intro_accepted: false,
                                                       warning_accepted: false,
-                                                      declined: false)}
+                                                      declined: false) }
   describe "#initialize" do
     it { should belong_to(:participant)}
     it { should validate_presence_of(:text)}
@@ -66,11 +66,22 @@ RSpec.describe Message, :type => :model do
       end
     end
     context "if participant has confirmed participation" do
-      context "if the question is the size of one text" do
-        it "should respond with a single-text challenge question" do
-          message = participant.messages.create({text: "SF"})
-          expect(message.replies_from_ether).to include(challenge1.question)
-          expect(participant.current_challenge).to eq(challenge1)
+      context "if participant just selected a challenge location" do
+        context "if the question is the size of one text" do
+          it "should respond with a single-text challenge question" do
+            message = participant.messages.create({text: "SF"})
+            expect(message.replies_from_ether).to include(challenge1.question)
+            expect(participant.current_challenge).to eq(challenge1)
+          end
+        end
+        context "if the question is the size of two texts" do
+          it "should respond with a two-text question" do
+            message = participant.messages.create({text: "East Bay"})
+            replies = message.replies_from_ether
+            expect(replies).to include("How now")
+            expect(replies).to include("brown cow")
+            expect(participant.current_challenge).to eq(challenge2)
+          end
         end
       end
       context "if the question is the size of two texts" do
