@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150123195042) do
+ActiveRecord::Schema.define(version: 20150123220552) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(version: 20150123195042) do
 
   create_table "challenges", force: true do |t|
     t.string   "location"
-    t.string   "question"
+    t.text     "question"
     t.string   "response_success"
     t.string   "response_failure"
     t.boolean  "any_answer_acceptable"
@@ -72,8 +72,8 @@ ActiveRecord::Schema.define(version: 20150123195042) do
   create_table "missions", force: true do |t|
     t.string   "title"
     t.string   "description"
-    t.string   "intro"
-    t.string   "warning"
+    t.text     "intro"
+    t.text     "warning"
     t.string   "decline_confirmation"
     t.string   "location_invite"
     t.string   "finish_confirmation"
