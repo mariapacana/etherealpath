@@ -22,6 +22,10 @@
     %br
     = f.check_box :any_answer_acceptable
     %br
+    = f.label(:needs_pic, "Pic-Based Challenge")
+    %br
+    = f.check_box :needs_pic
+    %br
     = f.fields_for :answers do |answer|
       = render 'answer_fields', :f => answer
     .links
