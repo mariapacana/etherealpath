@@ -201,8 +201,11 @@ class Participant < ActiveRecord::Base
   end
 
   def check_response(params)
-    response = Response.create_with_associations(response_text: params[:response_text], picture_remote_url: params[:picture_remote_url], challenge: self.current_challenge, participant: self)
-    messages =f params[:replies]
+    response = Response.create(text: params[:response_text],
+                               picture: params[:picture_remote_url] || nil,
+                               challenge: self.current_challenge,
+                               participant: self)
+    messages = params[:replies]
     if response.is_correct?
       response.mark_correct
       if self.finished_mission?
