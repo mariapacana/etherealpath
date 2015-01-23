@@ -37,6 +37,10 @@ class Response < ActiveRecord::Base
   end
 
   def is_correct_for_pic_challenge?
-    return true if self.picture
+    self.has_no_pic? ? false : true
+  end
+
+  def has_no_pic?
+    self.picture.url == "/pictures/original/missing.png"
   end
 end

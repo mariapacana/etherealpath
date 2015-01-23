@@ -202,7 +202,7 @@ class Participant < ActiveRecord::Base
 
   def check_response(params)
     response = Response.create(text: params[:response_text],
-                               picture: params[:picture_remote_url] || nil,
+                               picture: params[:picture_remote_url],
                                challenge: self.current_challenge,
                                participant: self)
     messages = params[:replies]
