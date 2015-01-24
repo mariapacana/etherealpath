@@ -42,7 +42,7 @@ class Participant < ActiveRecord::Base
       self.unflag_for_help
       self.confirm_participation if self.participation_unconfirmed
       messages = []
-      if self.participant.unassigned_to_a_challenge
+      if self.unassigned_to_a_challenge
         messages.push(self.mission.location_invite)
       else
         messages.push(self.current_challenge.question)
