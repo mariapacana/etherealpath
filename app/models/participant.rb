@@ -74,7 +74,11 @@ class Participant < ActiveRecord::Base
     self.messages.order(created_at: :desc).select {|m| m.valid? }
   end
 
-  # Locations
+  # Hand of God
+
+  def self.current_and_on_challenge(challenge)
+    self.current.select {|e| e.current_challenge == challenge}
+  end
 
   def self.current_and_in_sf
     self.current.select {|e| e.in_sf }

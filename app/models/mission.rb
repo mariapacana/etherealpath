@@ -31,7 +31,7 @@ class Mission < ActiveRecord::Base
 
   def hand_of_god(params)
     self.god_messages.create(text: params[:message],
-                             location: params[:location])
+                             location: params[:location] || "All")
     params[:participants].each do |p|
       message = p.messages.create({text: params[:message], incoming: false})
       message.send_by_sms
@@ -40,6 +40,10 @@ class Mission < ActiveRecord::Base
 
   def start
     hand_of_god(participants: self.current_participants, message: self.intro)
+  end
+
+  def hand_of_god_by_challenge(params)
+    hand_of_god(participants: Participant.current_and_on_challenge(params[:challenge]), message: params[:message])
   end
 
   def hand_of_god_east_bay(message)
