@@ -113,7 +113,7 @@ class Participant < ActiveRecord::Base
   end
 
   def unassign_from_challenge
-    self.current_challenge = nil
+    self.update_attribute(:current_challenge, nil)
   end
 
    # Confirming interest
