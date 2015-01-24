@@ -27,8 +27,12 @@ class Message < ActiveRecord::Base
     else
       # Participant is selecting a location
       if self.participant.unassigned_to_a_challenge
-        self.participant.assign_to_next_challenge(self.text)
-        replies.push(self.participant.current_challenge.question)
+        if location = standardize_location(self.text)
+          self.participant.assign_to_next_challenge(location)
+          replies.push(self.participant.current_challenge.question)
+        else
+          replies.push("We know not this place. Please text 'SF' (or 1), 'rooted' (or 2), or 'East Bay' (or 3).")
+        end
       else
         # Participant is sending a response
         self.participant.check_response(text: self.text,
