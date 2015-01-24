@@ -160,6 +160,29 @@ class Participant < ActiveRecord::Base
 
   # Assigning challenges
 
+  def rank
+    num_challenges = self.completed_challenges.count
+
+    case num_challenges
+    when 1
+      "Angel"
+    when 2
+      "Archangel"
+    when 3
+      "Principality"
+    when 4
+      "Power"
+    when 5
+      "Virtue"
+    when 6
+      "Dominion"
+    when 7
+      "Cherubim"
+    when 8
+      "Seraphim"
+    end
+  end
+
   def completed_challenges
     challenges = self.responses.where({correct: true}).map {|r| r.challenge }
     challenges.reject {|c| c.mission != self.mission }
@@ -210,15 +233,14 @@ class Participant < ActiveRecord::Base
       if self.finished_mission?
         messages.push(self.mission.finish_confirmation)
       elsif self.should_be_sent_to_last_challenge?
-        messages.push(response.challenge.response_success)
         self.unassign_from_challenge
         self.assign_to_last_challenge
         messages.push(self.current_challenge.question)
       else # Move them along to the next challenge
-        messages.push(response.challenge.response_success)
         messages.push(self.mission.location_invite)
         self.unassign_from_challenge
       end
+        messages.push("You have ascended to the rank of #{self.rank}")
     else
       messages.push(current_challenge.response_failure || "Sorry, wrong answer!")
     end
