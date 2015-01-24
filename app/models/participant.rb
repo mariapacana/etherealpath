@@ -6,7 +6,7 @@ class Participant < ActiveRecord::Base
   belongs_to :current_challenge, class_name: "Challenge", :foreign_key => "current_challenge_id"
   has_many :phone_numbers
 
-  validates :first_name, :last_name, presence: true
+  validates :first_name, presence: true
 
   scope :current, -> { where(declined: [nil, false]) }
   scope :not_current, -> { where(declined: true) }
