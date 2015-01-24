@@ -19,6 +19,7 @@ class MissionsController < ApplicationController
                                                             :location,
                                                             :question,
                                                             :any_answer_acceptable,
+                                                            :needs_pic,
                                                             answers,
                                                             :response_success,
                                                             :response_failure,
