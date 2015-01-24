@@ -55,7 +55,8 @@ class MissionsController < ApplicationController
     @participants = CSV.read(params["Participant"].tempfile, headers: true, skip_blanks: true)
     @participants.each do |p|
       @modelized_participant = Participant.new({first_name: p['first_name'],last_name: p['last_name'], email: p['email']})
-      # @modelized_participant.update_attribute(:code, p['code']) if p['code']
+      @modelized_participant.update_attribute(:code, p['code']) if p['code']
+      @modelized_participant.update_attribute(:mission, Mission.last)
       if @modelized_participant.save
         @modelized_participant.phone_numbers.create({number: p['phone_number'],
                                                      preferred: true})
