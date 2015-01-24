@@ -193,7 +193,7 @@ class Participant < ActiveRecord::Base
   end
 
   def next_challenge(location)
-  self.uncompleted_challenges.reject {|c| !matches_text(location, c.location) }[0]
+    self.uncompleted_challenges.sort_by{|c| c.created_at}.reject {|c| !matches_text(location, c.location) }[0]
   end
 
   def assign_to_next_challenge(location)
@@ -230,6 +230,7 @@ class Participant < ActiveRecord::Base
     messages = params[:replies]
     if response.is_correct?
       response.mark_correct
+      messages.push("You have ascended to the rank of #{self.rank}")
       if self.finished_mission?
         messages.push(self.mission.finish_confirmation)
       elsif self.should_be_sent_to_last_challenge?
@@ -240,7 +241,6 @@ class Participant < ActiveRecord::Base
         messages.push(self.mission.location_invite)
         self.unassign_from_challenge
       end
-        messages.push("You have ascended to the rank of #{self.rank}")
     else
       messages.push(current_challenge.response_failure || "Sorry, wrong answer!")
     end
