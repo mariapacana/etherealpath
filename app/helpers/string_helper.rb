@@ -4,7 +4,7 @@ module StringHelper
   end
 
   def is_yes(user_string)
-    return true if (/\A\s*y+\s*\z/.match(user_string.downcase) || /\A\s*yes\s*\z/.match(user_string.downcase))
+    return true if (/\s*y+\s*/.match(user_string.downcase) || /yes/.match(user_string.downcase))
   end
 
   def is_no(user_string)
