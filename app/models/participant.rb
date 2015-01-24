@@ -152,12 +152,7 @@ class Participant < ActiveRecord::Base
         message = self.mission.decline_confirmation
       else
         self.update_attribute(:warning_accepted, true)
-        if self.trial_run
-          self.assign_to_next_challenge("rooted")
-          message = self.current_challenge.question
-        else
-          message = self.mission.location_invite
-        end
+        message = self.mission.location_invite
       end
     end
     message
@@ -205,7 +200,7 @@ class Participant < ActiveRecord::Base
   end
 
   def check_response(params)
-    response = Response.create(text: params[:response_text],
+    response = Response.create(text: params[:text],
                                picture: params[:picture_remote_url],
                                challenge: self.current_challenge,
                                participant: self)
@@ -221,12 +216,8 @@ class Participant < ActiveRecord::Base
         messages.push(self.current_challenge.question)
       else # Move them along to the next challenge
         messages.push(response.challenge.response_success)
-        messages.push(self.mission.location_invite) unless self.trial_run
+        messages.push(self.mission.location_invite)
         self.unassign_from_challenge
-        if self.trial_run
-          self.assign_to_next_challenge("rooted")
-          messages.push(self.current_challenge.question)
-        end
       end
     else
       messages.push(current_challenge.response_failure || "Sorry, wrong answer!")

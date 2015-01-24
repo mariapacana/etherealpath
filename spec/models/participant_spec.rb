@@ -253,7 +253,7 @@ RSpec.describe Participant, :type => :model do
         expect([challenge2, challenge3]).to include(next_challenge)
       end
       it "can give another challenge of the same type" do
-        Response.create_with_associations(text: "hey2",
+        Response.create(text: "hey2",
                                           participant: participant,
                                           challenge: challenge2).mark_correct
         next_challenge = participant.next_challenge("East Bay")
@@ -276,8 +276,8 @@ RSpec.describe Participant, :type => :model do
   describe "#assign_to_last_challenge" do
     it "should assign a participant to the last challenge" do
       participant.mission = mission
-      Response.create_with_associations(response_text: "hey", challenge: challenge1, participant: participant).mark_correct
-      Response.create_with_associations(response_text: "hey", challenge: challenge2, participant: participant).mark_correct
+      Response.create(text: "hey", challenge: challenge1, participant: participant).mark_correct
+      Response.create(text: "hey", challenge: challenge2, participant: participant).mark_correct
 
       participant.assign_to_last_challenge
       expect(participant.current_challenge).to eq(challenge3)
@@ -289,7 +289,7 @@ RSpec.describe Participant, :type => :model do
       it "should return true if the participant's done all the challenges" do
         participant.mission = mission
         mission.challenges.each do |challenge|
-          Response.create_with_associations(response_text: "hey", challenge: challenge, participant: participant).mark_correct
+          Response.create(text: "hey", challenge: challenge, participant: participant).mark_correct
         end
         expect(participant.finished_mission?).to be true
       end
@@ -297,8 +297,8 @@ RSpec.describe Participant, :type => :model do
     describe "#should_be_sent_to_last_challenge?" do
       it "should return true if the participant's done almost all the challenges" do
         participant.mission = mission
-        Response.create_with_associations(response_text: "hey", challenge: challenge1, participant: participant).mark_correct
-        Response.create_with_associations(response_text: "hey", challenge: challenge2, participant: participant).mark_correct
+        Response.create(text: "hey", challenge: challenge1, participant: participant).mark_correct
+        Response.create(text: "hey", challenge: challenge2, participant: participant).mark_correct
 
         expect(participant.should_be_sent_to_last_challenge?).to eq(true)
       end
@@ -306,7 +306,7 @@ RSpec.describe Participant, :type => :model do
     describe "#finished_the_last_challenge?" do
       it "should return true if the participant's done all the challenges" do
         participant.mission = mission
-        Response.create_with_associations(response_text: "hey", challenge: challenge3, participant: participant).mark_correct
+        Response.create(text: "hey", challenge: challenge3, participant: participant).mark_correct
 
         expect(participant.finished_the_last_challenge?).to be true
       end
@@ -320,11 +320,11 @@ RSpec.describe Participant, :type => :model do
       context "if their answer is correct" do
         context "if participant has done all but the last challenge" do
           it "should assign them to the last challenge" do
-            Response.create_with_associations(response_text: "hey", challenge: challenge1, participant: participant).mark_correct
+            Response.create(text: "hey", challenge: challenge1, participant: participant).mark_correct
             participant.assign_to_challenge(challenge2)
             challenge2.answers.create({text: 'whoop'})
 
-            participant.check_response("whoop", messages)
+            participant.check_response(text: "whoop", replies: messages)
             expect(messages).to include(challenge2.response_success)
             expect(messages).to include(challenge3.question)
             expect(participant.current_challenge).to eq(challenge3)
@@ -333,12 +333,12 @@ RSpec.describe Participant, :type => :model do
         context "if their last answer completes the mission" do
           it "should congratulate them on ending the mission" do
             [challenge1, challenge2].each do |challenge|
-              Response.create_with_associations(response_text: "hey", challenge: challenge, participant: participant).mark_correct
+              Response.create(text: "hey", challenge: challenge, participant: participant).mark_correct
             end
             challenge3.answers.create({text: "yay"})
             participant.assign_to_last_challenge
 
-            participant.check_response("yay", messages)
+            participant.check_response(text: "yay", replies: messages)
             expect(messages).to include(mission.finish_confirmation)
           end
         end
@@ -347,7 +347,7 @@ RSpec.describe Participant, :type => :model do
             participant.assign_to_challenge(challenge1)
             challenge1.answers.create({text: "ok"})
 
-            participant.check_response("  ok ", messages)
+            participant.check_response(text: "  ok ", replies: messages)
             expect(messages).to include(challenge1.response_success)
             expect(messages).to include(participant.mission.location_invite)
           end

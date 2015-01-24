@@ -31,16 +31,6 @@ RSpec.describe Response, :type => :model do
                   rejecting('text/plain', 'text/xml')}
   end
 
-  describe "#create_with_associations" do
-    it "creates a response with a challenge and a participant" do
-      response =  Response.create_with_associations(text: "hey",
-                                                    challenge: challenge,
-                                                    participant: participant)
-      expect(response.challenge).to eq(challenge)
-      expect(response.participant).to eq(participant)
-    end
-  end
-
   describe "#mark_correct" do
     it "marks a challenge as correct" do
       response.mark_correct

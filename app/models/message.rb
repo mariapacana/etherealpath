@@ -31,7 +31,7 @@ class Message < ActiveRecord::Base
         replies.push(self.participant.current_challenge.question)
       else
         # Participant is sending a response
-        self.participant.check_response(response_text: self.text,
+        self.participant.check_response(text: self.text,
                                         picture_remote_url: self.picture_remote_url,
                                         replies: replies)
       end
