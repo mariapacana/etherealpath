@@ -27,7 +27,7 @@
 
 %h3 Challenges
 
-- @mission.challenges.each do |challenge|
+- @mission.challenges.order(created_at: :asc).each do |challenge|
   %b Challenge #{challenge.id}
   %ul
     %li
