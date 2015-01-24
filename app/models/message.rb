@@ -31,7 +31,7 @@ class Message < ActiveRecord::Base
           self.participant.assign_to_next_challenge(location)
           replies.push(self.participant.current_challenge.question)
         else
-          replies.push("We know not this place. Please text 'SF' (or 1), 'rooted' (or 2), or 'East Bay' (or 3).")
+          replies.push("We know not this place. Please text 'rooted' (or 1), 'SF' (or 2), or 'East Bay' (or 3).")
         end
       else
         # Participant is sending a response
