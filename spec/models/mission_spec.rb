@@ -5,6 +5,7 @@ RSpec.describe Mission, :type => :model do
                                  description: "Weird Time",
                                  intro: "You have a choice",
                                  warning: "Be very afraid",
+                                 current: true,
                                  decline_confirmation: "OK fine",
                                  finish_confirmation: "Congrats",
                                  location_invite: "rooted, SF, or Ebay?",

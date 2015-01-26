@@ -4,6 +4,7 @@ RSpec.describe Message, :type => :model do
   let!(:mission) { Mission.create({title: "Awesome Mission",
                   description: "Yay",
                   intro: "Enigmatic Intro",
+                  current: true,
                   warning: "Obscure Warning",
                   decline_confirmation: "OK fine",
                   finish_confirmation: "Congrats",

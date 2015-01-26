@@ -10,6 +10,7 @@ class MissionsController < ApplicationController
                                     :description,
                                     :start_time,
                                     :intro,
+                                    :current,
                                     :warning,
                                     :decline_confirmation,
                                     :finish_confirmation,
@@ -39,7 +40,7 @@ class MissionsController < ApplicationController
                    "start_time(5i)"]
 
     start_time = DateTime.new(*s_time_params.map {|p| mission_params[p].to_i})
-    new_mission_params = mission_params.except(*s_time_params).merge({start_time: start_time})
+    new_mission_params = mission_params.except(*s_time_params).merge({start_time: start_time, current: true})
 
     @mission = Mission.new(mission_params)
     if @mission.save

@@ -9,6 +9,7 @@ feature "creating new missions" do
                         password_confirmation: "bobbob"})
     @mission = Mission.create({title: "Awesome Mission",
                                description: "Weird Time",
+                               current: true,
                                intro: "You have a choice",
                                warning: "Be very afraid",
                                decline_confirmation: "OK fine",

@@ -9,6 +9,7 @@ RSpec.describe Response, :type => :model do
   let!(:mission) {Mission.create({title: "Mission",
                                   description: "Yay",
                                   intro: "Random Intro",
+                                  current: true,
                                   warning: "Obscure Warning",
                                   decline_confirmation: "OK fine",
                                   finish_confirmation: "Congrats",
