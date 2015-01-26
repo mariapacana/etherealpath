@@ -26,7 +26,9 @@ class Message < ActiveRecord::Base
     # Participation confirmed
     else
       # Participant is selecting a location
-      if self.participant.unassigned_to_a_challenge
+      if self.participant.finished_mission?
+        replies.push("Congratulations on completing the Path. Stay tuned for bonus missions throughout the week! Text 'angel' with any questions.")
+      elsif self.participant.unassigned_to_a_challenge
         if location = standardize_location(self.text)
           self.participant.assign_to_next_challenge(location)
           replies.push(self.participant.current_challenge.question)

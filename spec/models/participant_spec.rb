@@ -55,7 +55,6 @@ RSpec.describe Participant, :type => :model do
     it { should have_many(:challenges).through(:responses) }
     it { should belong_to(:current_challenge).with_foreign_key(:current_challenge_id) }
     it { should validate_presence_of(:first_name)}
-    it { should validate_presence_of(:last_name)}
   end
 
   describe ".find_by_phone_or_code" do
@@ -325,7 +324,7 @@ RSpec.describe Participant, :type => :model do
             challenge2.answers.create({text: 'whoop'})
 
             participant.check_response(text: "whoop", replies: messages)
-            expect(messages).to include(challenge2.response_success)
+            expect(messages).to include("You have ascended to the rank of #{participant.rank}")
             expect(messages).to include(challenge3.question)
             expect(participant.current_challenge).to eq(challenge3)
           end
@@ -348,7 +347,7 @@ RSpec.describe Participant, :type => :model do
             challenge1.answers.create({text: "ok"})
 
             participant.check_response(text: "  ok ", replies: messages)
-            expect(messages).to include(challenge1.response_success)
+            expect(messages).to include("You have ascended to the rank of #{participant.rank}")
             expect(messages).to include(participant.mission.location_invite)
           end
         end

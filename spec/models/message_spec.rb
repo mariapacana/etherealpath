@@ -96,9 +96,17 @@ RSpec.describe Message, :type => :model do
       context "if participant just responded to a challenge" do
         it "should call #check_response" do
           participant.assign_to_challenge(challenge1)
-          expect(participant).to receive(:check_response).with("Yay", [])
+          expect(participant).to receive(:check_response).with({text: "Yay", picture_remote_url: nil, replies: []})
           message = participant.messages.create({text: "Yay"})
           message.replies_from_ether
+        end
+      end
+      context "if participant just finished the mission" do
+        it "should say to stay tuned for bonus missions" do
+          allow(participant).to receive(:finished_mission?).and_return(true)
+          message = participant.messages.create({text: "Woohoo"})
+          replies = message.replies_from_ether
+          expect(replies).to include("Congratulations on completing the Path. Stay tuned for bonus missions throughout the week! Text 'angel' with any questions.")
         end
       end
     end
