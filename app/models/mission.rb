@@ -17,6 +17,8 @@ class Mission < ActiveRecord::Base
 
   validate :start_time_is_after_today, on: :create
 
+  scope :current, -> { where(current: true) }
+
   def current_participants
     self.participants.current
   end
