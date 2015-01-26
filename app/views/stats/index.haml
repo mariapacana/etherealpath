@@ -1,0 +1,16 @@
+%h1 Mission Statistics
+
+%ul
+  - @missions.each do |mission|
+    %div(class='mission_stats')
+      = link_to mission.title, mission_path(mission)
+      %ul
+        %li Number of Current Participants #{mission.participants.where("warning_accepted = ? ", true).count}
+        %li Solved 1 Challenge: #{mission.participants.select {|p| p.completed_challenges.length == 1}.count }
+        %li Solved 2 Challenges: #{mission.participants.select {|p| p.completed_challenges.length == 2}.count }
+        %li Solved 3 Challenges: #{mission.participants.select {|p| p.completed_challenges.length == 3}.count }
+        %li Solved 4 Challenges: #{mission.participants.select {|p| p.completed_challenges.length == 4}.count }
+        %li Solved 5 Challenges: #{mission.participants.select {|p| p.completed_challenges.length == 5}.count }
+        %li Solved 6 Challenges: #{mission.participants.select {|p| p.completed_challenges.length == 6}.count }
+        %li Solved 7 Challenges: #{mission.participants.select {|p| p.completed_challenges.length == 7}.count }
+        %li Finished Game: #{mission.participants.select {|p| p.finished_game? }.count }

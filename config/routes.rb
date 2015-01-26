@@ -21,4 +21,7 @@ Rails.application.routes.draw do
   match '/help', to: 'participants#index', via: [:get]
   match '/add_participants', to: 'missions#add_participants', via: [:post]
   get '/download_picture/:id', to: 'responses#download_picture', as: 'download_picture'
+
+  get '/stats', to: 'stats#index', as: 'stats'
+
 end
