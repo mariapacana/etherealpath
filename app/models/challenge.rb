@@ -3,7 +3,7 @@ class Challenge < ActiveRecord::Base
   has_many :responses
   has_many :participants, through: :responses
   has_many :answers
-  has_many :current_participants, :class_name => "User", :foreign_key => "current_challenge_id"
+  has_many :current_participants, :class_name => "Participant", :foreign_key => "current_challenge_id"
 
   validate :location_is_either_rooted_sf_or_east_bay
   validates :location,

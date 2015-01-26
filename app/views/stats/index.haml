@@ -13,4 +13,3 @@
         %li Solved 5+ Challenges: #{mission.current_participants.select {|p| p.completed_challenges.length > 4}.count }
         %li Solved 6+ Challenges: #{mission.current_participants.select {|p| p.completed_challenges.length > 5}.count }
         %li Solved 7+ Challenges: #{mission.current_participants.select {|p| p.completed_challenges.length > 6}.count }
-        %li Finished Mission: #{mission.current_participants.select {|p| p.finished_mission? }.count }

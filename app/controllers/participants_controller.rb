@@ -1,7 +1,7 @@
 class ParticipantsController < ApplicationController
   def index
     @challenge = Challenge.find(params[:challenge_id])
-    @participants = @challenge.participants
+    @participants = @challenge.current_participants
   end
 
   def index_help

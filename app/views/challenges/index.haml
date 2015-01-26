@@ -3,5 +3,5 @@
 %ul
   - @challenges.each do |challenge|
     %li
-      = link_to "Participants: #{challenge.participants.count}", challenge_participants_path(challenge)
+      = link_to "Participants: #{challenge.current_participants.count}", challenge_participants_path(challenge)
       %p Question: #{challenge.question}
