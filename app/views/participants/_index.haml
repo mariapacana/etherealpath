@@ -1,0 +1,4 @@
+- @participants.each do |p|
+  %li
+    = link_to "#{p.first_name} #{p.last_name}", participant_messages_path(p)
+    %p=  "#{p.last_message_sent.text}"

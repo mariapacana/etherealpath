@@ -1,6 +1,5 @@
-%h1 Help Desk
+%h1 Participants for Challenge #{@challenge.id}
 
-- @participants.each do |p|
-  %li
-    = link_to "#{p.first_name} #{p.last_name}", participant_messages_path(p)
-    %p=  "#{p.last_message_sent.text}"
+%p Challenge Question: #{@challenge.question}
+
+= render :partial =>  'index', :locals => {:participants => @participants}

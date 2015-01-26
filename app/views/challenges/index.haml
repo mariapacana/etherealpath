@@ -1,0 +1,7 @@
+%h1 Participants by Challenge
+
+%ul
+  - @challenges.each do |challenge|
+    %li
+      = link_to "Participants: #{challenge.participants.count}", challenge_participants_path(challenge)
+      %p Question: #{challenge.question}

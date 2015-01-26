@@ -14,6 +14,10 @@ class Challenge < ActiveRecord::Base
 
   accepts_nested_attributes_for :answers, :reject_if => :all_blank, :allow_destroy => true
 
+  def self.current
+    self.all.select {|c| c.mission.current }
+  end
+
   private
     def location_is_either_rooted_sf_or_east_bay
       return if location.blank?

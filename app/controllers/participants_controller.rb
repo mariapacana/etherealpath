@@ -1,5 +1,10 @@
 class ParticipantsController < ApplicationController
   def index
+    @challenge = Challenge.find(params[:challenge_id])
+    @participants = @challenge.participants
+  end
+
+  def index_help
     @participants = Participant.needs_help
   end
 
