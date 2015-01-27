@@ -97,11 +97,11 @@ class Participant < ActiveRecord::Base
   end
 
   def in_east_bay
-    self.current_challenge.location == "East Bay"
+    self.current_challenge && self.current_challenge.location == "East Bay"
   end
 
   def in_sf
-    self.current_challenge.location == "SF"
+    self.current_challenge && self.current_challenge.location == "SF"
   end
 
   def did_an_sf_challenge
