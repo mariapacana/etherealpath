@@ -101,6 +101,27 @@ RSpec.describe Participant, :type => :model do
     end
   end
 
+  # Hand of God
+
+  describe "#did_an_sf_challenge" do
+    context "if the participant did an sf challenge" do
+      it "should return true" do
+        response = participant.responses.create({text: "Yes",
+                                                 challenge: challenge1,
+                                                 correct: true})
+        expect(participant.did_an_sf_challenge).to be true
+      end
+    end
+    context "if the participant did an East Bay challenge" do
+      it "should return false" do
+        response = participant.responses.create({text: "Yes",
+                                                 challenge: challenge2,
+                                                 correct: true})
+        expect(participant.did_an_sf_challenge).to be false
+      end
+    end
+  end
+
   describe "#assign_to_challenge" do
     it "assigns participant to a challenge" do
       participant.assign_to_challenge(challenge1)

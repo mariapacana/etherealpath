@@ -84,6 +84,14 @@ class Participant < ActiveRecord::Base
     self.current.select {|e| e.in_sf }
   end
 
+  def self.current_and_did_an_sf_challenge
+    self.current.select {|e| e.did_an_sf_challenge }
+  end
+
+  def self.current_and_did_an_east_bay_challenge
+    self.current.select {|e| e.did_an_east_bay_challenge }
+  end
+
   def self.current_and_in_east_bay
     self.current.select {|e| e.in_east_bay }
   end
@@ -94,6 +102,20 @@ class Participant < ActiveRecord::Base
 
   def in_sf
     self.current_challenge.location == "SF"
+  end
+
+  def did_an_sf_challenge
+    self.responses.each do |response|
+      return true if response.challenge.location == "SF"
+    end
+    return false
+  end
+
+  def did_an_east_bay_challenge
+    self.responses.each do |response|
+      return true if response.challenge.location == "East Bay"
+    end
+    return false
   end
 
   def assign_to_challenge(challenge)
