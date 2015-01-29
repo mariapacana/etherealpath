@@ -1,0 +1,3 @@
+%li Solved #{num_completed + 1}+ Challenges: #{participants.select {|p| p.completed_challenges.length > num_completed}.count }
+- if num_completed == 7
+  %li Finished Mission: #{participants.select {|p| p.finished_mission? }.count }
