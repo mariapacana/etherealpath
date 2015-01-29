@@ -56,6 +56,7 @@ RSpec.describe Participant, :type => :model do
     it { should have_many(:challenges).through(:responses) }
     it { should belong_to(:current_challenge).with_foreign_key(:current_challenge_id) }
     it { should validate_presence_of(:first_name)}
+    it { should validate_uniqueness_of(:code)}
   end
 
   describe ".find_by_phone_or_code" do

@@ -52,17 +52,22 @@ class MissionsController < ApplicationController
   end
 
   def add_participants
-    @modelized_participants = []
     @participants = CSV.read(params["Participant"].tempfile, headers: true, skip_blanks: true)
     @participants.each do |p|
-      @modelized_participant = Participant.new({first_name: p['first_name'],last_name: p['last_name'], email: p['email']})
-      @modelized_participant.update_attribute(:code, p['code']) if p['code']
-      @modelized_participant.update_attribute(:mission, Mission.last)
-      if @modelized_participant.save
-        @modelized_participant.phone_numbers.create({number: p['phone_number'],
-                                                     preferred: true})
+      phone = PhoneNumber.new({number: p['phone_number'], preferred: true})
+      if phone.save
+        unless Participant.find_by_first_name_and_last_name(p['first_name'],
+                                                            p['last_name'])
+          @new_participant = Participant.new({first_name: p['first_name'],
+                                              last_name: p['last_name'],
+                                              email: p['email']})
+          @new_participant.update_attribute(:code, p['code']) if p['code']
+          @new_participant.update_attribute(:mission, Mission.last)
+          if @new_participant.save
+            phone.update_attribute(:participant, @new_participant)
+          end
+        end
       end
-      @modelized_participants << @modelized_participant
     end
     redirect_to root_path
   end

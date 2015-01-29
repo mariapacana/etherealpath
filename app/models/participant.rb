@@ -7,6 +7,7 @@ class Participant < ActiveRecord::Base
   has_many :phone_numbers
 
   validates :first_name, presence: true
+  validates_uniqueness_of :code
 
   scope :current, -> { where(declined: [nil, false]) }
   scope :not_current, -> { where(declined: true) }
